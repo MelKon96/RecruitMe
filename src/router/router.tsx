@@ -7,26 +7,28 @@ import {
 import { UsersPage } from '../pages/UsersPage';
 import { UserDetailPage } from '../pages/UserDetailPage';
 import { Header } from '../components/Header';
+import { Footer } from '../components/Footer';
 import { ScrollToTop } from '../components/ScrollToTop';
 
 const rootRoute = createRootRoute({
   component: () => (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+    <div className="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900">
       <ScrollToTop />
       <Header />
-      <Outlet />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   ),
 });
 
-// индексный роут
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: UsersPage,
 });
 
-// динамический роут
 const userDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/users/$id',
@@ -34,9 +36,9 @@ const userDetailRoute = createRoute({
 });
 
 const routeTree = rootRoute.addChildren([indexRoute, userDetailRoute]);
+
 export const router = createRouter({ routeTree });
 
-// Регистрация типов роутера для TypeScript
 declare module '@tanstack/react-router' {
   interface Register {
     router: typeof router;
