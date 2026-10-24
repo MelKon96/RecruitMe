@@ -33,12 +33,12 @@ export const Header = () => {
           </span>
         </nav>
 
-        <button
-          type="button"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700 cursor-pointer"
+        <Link
+          to="/my-resumes"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
         >
-          Мой профиль
-        </button>
+          Мои резюме
+        </Link>
       </div>
     </header>
   );

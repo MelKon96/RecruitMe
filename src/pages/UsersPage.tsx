@@ -1,12 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { fetchUsers } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
+import type { IUser } from '../types/user';
+
+const RESUME_STORAGE_KEY = 'recruit_me_resume';
+const RESUME_UPDATED_EVENT = 'resume-updated';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [resume, setResume] = useState<IUser | null>(() => {
+    const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
+
+    if (!savedResume) return null;
+
+    try {
+      return JSON.parse(savedResume) as IUser;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    const updateResume = () => {
+      const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
+
+      if (!savedResume) {
+        setResume(null);
+        return;
+      }
+
+      try {
+        setResume(JSON.parse(savedResume) as IUser);
+      } catch {
+        setResume(null);
+      }
+    };
+
+    window.addEventListener(RESUME_UPDATED_EVENT, updateResume);
+    window.addEventListener('storage', updateResume);
+
+    return () => {
+      window.removeEventListener(RESUME_UPDATED_EVENT, updateResume);
+      window.removeEventListener('storage', updateResume);
+    };
+  }, []);
 
   const {
     data: users,
@@ -17,9 +57,13 @@ export const UsersPage = () => {
     queryFn: fetchUsers,
   });
 
+  const allUsers = resume
+    ? [...(users ?? []).filter((user) => user.id !== resume.id), resume]
+    : (users ?? []);
+
   const normalizedSearch = search.trim().toLowerCase();
 
-  const filteredUsers = users?.filter((user) => {
+  const filteredUsers = allUsers.filter((user) => {
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
     const skills = user.skills.join(' ').toLowerCase();
 
@@ -73,7 +117,7 @@ export const UsersPage = () => {
         />
       </div>
 
-      {filteredUsers && filteredUsers.length > 0 ? (
+      {filteredUsers.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredUsers.map((user) => (
             <UserCard

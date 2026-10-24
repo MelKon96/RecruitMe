@@ -15,6 +15,7 @@ export interface IUser {
   skills: string[];
   level: DevLevel;
   bio: string;
+  location?: string;
 }
 
 // Параметры фильтрации для поиска
