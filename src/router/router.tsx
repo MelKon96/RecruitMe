@@ -7,10 +7,12 @@ import {
 import { UsersPage } from '../pages/UsersPage';
 import { UserDetailPage } from '../pages/UserDetailPage';
 import { Header } from '../components/Header';
+import { ScrollToTop } from '../components/ScrollToTop';
 
 const rootRoute = createRootRoute({
   component: () => (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
+      <ScrollToTop />
       <Header />
       <Outlet />
     </div>
