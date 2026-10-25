@@ -108,10 +108,12 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
 
           {user.id !== -1 && (
             <button
+              type="button"
               onClick={() =>
                 navigate({
                   to: '/chat/$userId',
                   params: { userId: String(user.id) },
+                  search: { from: 'user' },
                 })
               }
               className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white transition hover:bg-indigo-700"

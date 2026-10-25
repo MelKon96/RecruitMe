@@ -3,11 +3,16 @@ import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUsers } from '../api/usersApi';
 import type { IUser } from '../types/user';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Trash2 } from 'lucide-react';
 
 interface IConversation {
   userId: string;
   lastMessage?: string;
+  messages?: {
+    id: string;
+    text: string;
+    sender: 'user' | 'other';
+  }[];
 }
 
 const CONVERSATIONS_KEY = 'recruit_me_conversations';
@@ -23,7 +28,11 @@ const getConversations = (): IConversation[] => {
 
 export const MessagesPage = () => {
   const navigate = useNavigate();
-  const [conversations] = useState<IConversation[]>(getConversations);
+
+  const [conversations, setConversations] =
+    useState<IConversation[]>(getConversations);
+
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
   const {
     data: users,
@@ -33,6 +42,20 @@ export const MessagesPage = () => {
     queryKey: ['users'],
     queryFn: fetchUsers,
   });
+
+  const handleDelete = (userId: string) => {
+    const updatedConversations = getConversations().filter(
+      (conversation) => conversation.userId !== userId,
+    );
+
+    localStorage.setItem(
+      CONVERSATIONS_KEY,
+      JSON.stringify(updatedConversations),
+    );
+
+    setConversations(updatedConversations);
+    setDeletingUserId(null);
+  };
 
   if (isLoading) {
     return (
@@ -52,11 +75,15 @@ export const MessagesPage = () => {
     );
   }
 
+  const visibleConversations = conversations.filter((conversation) =>
+    users?.some((user) => String(user.id) === conversation.userId),
+  );
+
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Сообщения</h1>
 
-      {conversations.length === 0 ? (
+      {visibleConversations.length === 0 ? (
         <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
           <p className="font-medium text-gray-700">Пока нет переписок</p>
 
@@ -73,44 +100,81 @@ export const MessagesPage = () => {
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-          {conversations.map((conversation) => {
+          {visibleConversations.map((conversation) => {
             const user = users?.find(
               (item: IUser) => String(item.id) === conversation.userId,
             );
 
-            if (!user) {
-              return null;
-            }
+            if (!user) return null;
 
             return (
-              <button
+              <div
                 key={conversation.userId}
-                onClick={() =>
-                  navigate({
-                    to: '/chat/$userId',
-                    params: { userId: conversation.userId },
-                  })
-                }
-                className="flex w-full cursor-pointer items-center gap-4 border-b border-gray-100 p-4 text-left transition last:border-b-0 hover:bg-gray-50"
+                className="flex flex-wrap items-center gap-3 border-b border-gray-100 p-3 transition last:border-b-0 hover:bg-gray-50 sm:flex-nowrap sm:p-4"
               >
-                <img
-                  src={user.image}
-                  alt={`${user.firstName} ${user.lastName}`}
-                  className="h-12 w-12 shrink-0 rounded-full object-cover"
-                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    navigate({
+                      to: '/chat/$userId',
+                      params: { userId: conversation.userId },
+                      search: { from: 'messages' },
+                    })
+                  }
+                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left sm:gap-4"
+                >
+                  <img
+                    src={user.image}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className="h-10 w-10 shrink-0 rounded-full object-cover sm:h-12 sm:w-12"
+                  />
 
-                <div className="min-w-0 flex-1">
-                  <p className="font-semibold text-gray-900">
-                    {user.firstName} {user.lastName}
-                  </p>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold text-gray-900">
+                      {user.firstName} {user.lastName}
+                    </p>
 
-                  <p className="mt-1 truncate text-sm text-gray-500">
-                    {conversation.lastMessage || 'Открыть переписку'}
-                  </p>
-                </div>
+                    <p className="mt-1 truncate text-sm text-gray-500">
+                      {conversation.lastMessage || 'Открыть переписку'}
+                    </p>
+                  </div>
 
-                <MessageCircle size={22} className="shrink-0 text-indigo-600" />
-              </button>
+                  <MessageCircle
+                    size={20}
+                    className="shrink-0 text-indigo-600 sm:size-[22px]"
+                  />
+                </button>
+
+                {deletingUserId === conversation.userId ? (
+                  <div className="flex w-full gap-2 pl-[52px] sm:w-auto sm:pl-0">
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(conversation.userId)}
+                      className="flex-1 cursor-pointer rounded-lg bg-red-600 px-3 py-2 text-sm text-white transition hover:bg-red-700 sm:flex-none"
+                    >
+                      Удалить
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setDeletingUserId(null)}
+                      className="flex-1 cursor-pointer rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 transition hover:bg-gray-100 sm:flex-none"
+                    >
+                      Отмена
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setDeletingUserId(conversation.userId)}
+                    aria-label={`Удалить переписку с ${user.firstName} ${user.lastName}`}
+                    title="Удалить переписку"
+                    className="shrink-0 cursor-pointer rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>

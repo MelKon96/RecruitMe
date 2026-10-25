@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useNavigate, useParams } from '@tanstack/react-router';
+import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 
 interface IMessage {
   id: string;
@@ -51,6 +51,11 @@ interface IChatConversationProps {
 
 const ChatConversation = ({ userId }: IChatConversationProps) => {
   const navigate = useNavigate();
+
+  const search = useSearch({
+    from: '/chat/$userId',
+    shouldThrow: false,
+  }) as { from?: string };
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>(() => {
@@ -146,18 +151,28 @@ const ChatConversation = ({ userId }: IChatConversationProps) => {
     setMessage('');
   };
 
+  const handleBack = () => {
+    if (search.from === 'messages') {
+      navigate({ to: '/messages' });
+      return;
+    }
+
+    navigate({
+      to: '/users/$id',
+      params: { id: userId },
+    });
+  };
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
       <button
-        onClick={() =>
-          navigate({
-            to: '/users/$id',
-            params: { id: userId },
-          })
-        }
+        type="button"
+        onClick={handleBack}
         className="mb-6 cursor-pointer text-sm font-medium text-gray-600 transition hover:text-indigo-600"
       >
-        ← Назад к пользователю
+        {search.from === 'messages'
+          ? '← Назад к сообщениям'
+          : '← Назад к пользователю'}
       </button>
 
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">

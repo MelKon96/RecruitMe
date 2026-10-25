@@ -7,9 +7,22 @@ import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
 
+const RESUME_STORAGE_KEY = 'recruit_me_resume';
+
+const getSavedResume = (): IUser | null => {
+  try {
+    const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
+    return savedResume ? (JSON.parse(savedResume) as IUser) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const CreateResumePage = () => {
   const navigate = useNavigate();
-  const [skills, setSkills] = useState<string[]>([]);
+  const [savedResume] = useState<IUser | null>(getSavedResume);
+
+  const [skills, setSkills] = useState<string[]>(savedResume?.skills ?? []);
 
   const {
     register,
@@ -19,22 +32,23 @@ export const CreateResumePage = () => {
   } = useForm<ResumeFormValues>({
     resolver: zodResolver(resumeSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      position: '',
-      level: 'Junior',
-      email: '',
-      phone: '',
-      skills: '',
-      bio: '',
-      companyName: '',
-      department: '',
-      location: '',
+      firstName: savedResume?.firstName ?? '',
+      lastName: savedResume?.lastName ?? '',
+      position: savedResume?.company.title ?? '',
+      level: savedResume?.level ?? 'Junior',
+      email: savedResume?.email ?? '',
+      phone: savedResume?.phone ?? '',
+      skills: savedResume?.skills.join(', ') ?? '',
+      bio: savedResume?.bio ?? '',
+      companyName: savedResume?.company.name ?? '',
+      department: savedResume?.company.department ?? '',
+      location: savedResume?.location ?? '',
     },
   });
 
   const handleSkillsChange = (updatedSkills: string[]) => {
     setSkills(updatedSkills);
+
     setValue('skills', updatedSkills.join(', '), {
       shouldValidate: true,
       shouldDirty: true,
@@ -62,19 +76,26 @@ export const CreateResumePage = () => {
       location: data.location || undefined,
     };
 
-    localStorage.setItem('recruit_me_resume', JSON.stringify(resume));
+    localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(resume));
     window.dispatchEvent(new Event('resume-updated'));
 
     navigate({ to: '/my-resumes' });
   };
 
   return (
-    <ResumeForm
-      register={register}
-      errors={errors}
-      skills={skills}
-      onSkillsChange={handleSkillsChange}
-      onSubmit={handleSubmit(onSubmit)}
-    />
+    <section className="mx-auto max-w-4xl px-4 py-8">
+      <h1 className="mb-6 text-2xl font-bold text-gray-900">
+        {savedResume ? 'Редактировать резюме' : 'Создать резюме'}
+      </h1>
+
+      <ResumeForm
+        register={register}
+        errors={errors}
+        skills={skills}
+        onSkillsChange={handleSkillsChange}
+        onSubmit={handleSubmit(onSubmit)}
+        submitLabel={savedResume ? 'Сохранить изменения' : 'Создать резюме'}
+      />
+    </section>
   );
 };

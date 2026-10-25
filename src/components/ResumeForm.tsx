@@ -10,6 +10,7 @@ interface ResumeFormProps {
   skills: string[];
   onSkillsChange: (skills: string[]) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  submitLabel?: string;
 }
 
 const levels: DevLevel[] = ['Junior', 'Middle', 'Senior', 'Lead'];
@@ -25,6 +26,7 @@ export const ResumeForm = ({
   skills,
   onSkillsChange,
   onSubmit,
+  submitLabel = 'Создать резюме',
 }: ResumeFormProps) => {
   return (
     <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
@@ -34,10 +36,6 @@ export const ResumeForm = ({
       >
         ← Назад к моим резюме
       </Link>
-
-      <h1 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
-        Создать резюме
-      </h1>
 
       <p className="mt-2 text-gray-600">
         Расскажите о себе и своих профессиональных навыках.
@@ -241,7 +239,7 @@ export const ResumeForm = ({
             type="submit"
             className="cursor-pointer rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
           >
-            Создать резюме
+            {submitLabel}
           </button>
         </div>
       </form>

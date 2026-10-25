@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
+import { Pencil, Trash2 } from 'lucide-react';
 
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
@@ -30,6 +31,7 @@ export const MyResumesPage = () => {
           <h1 className="text-3xl font-bold tracking-tight text-gray-900">
             Мои резюме
           </h1>
+
           <p className="mt-2 text-gray-500">
             Управляйте своим профилем специалиста.
           </p>
@@ -87,20 +89,35 @@ export const MyResumesPage = () => {
                 <h2 className="text-xl font-semibold text-gray-900">
                   {resume.firstName} {resume.lastName}
                 </h2>
+
                 <p className="mt-1 text-gray-600">{resume.company.title}</p>
+
                 <span className="mt-2 inline-block rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   {resume.level}
                 </span>
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={handleDelete}
-              className="text-sm font-medium text-red-600 hover:text-red-700 cursor-pointer"
-            >
-              Удалить
-            </button>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/create-resume"
+                aria-label="Редактировать резюме"
+                title="Редактировать резюме"
+                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600"
+              >
+                <Pencil size={18} />
+              </Link>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                aria-label="Удалить резюме"
+                title="Удалить резюме"
+                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-red-200 text-red-600 transition hover:bg-red-50"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
           </div>
 
           <div className="mt-6 border-t border-gray-100 pt-5">
@@ -120,6 +137,7 @@ export const MyResumesPage = () => {
 
           <div className="mt-6 border-t border-gray-100 pt-5">
             <h3 className="font-semibold text-gray-900">О себе</h3>
+
             <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">
               {resume.bio}
             </p>
@@ -127,10 +145,13 @@ export const MyResumesPage = () => {
 
           <div className="mt-6 border-t border-gray-100 pt-5">
             <h3 className="font-semibold text-gray-900">Контакты</h3>
+
             <p className="mt-2 text-sm text-gray-600">{resume.email}</p>
+
             {resume.phone && (
               <p className="mt-1 text-sm text-gray-600">{resume.phone}</p>
             )}
+
             {resume.location && (
               <p className="mt-1 text-sm text-gray-600">{resume.location}</p>
             )}
