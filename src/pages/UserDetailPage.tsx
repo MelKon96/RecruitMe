@@ -74,7 +74,7 @@ export const UserDetailPage = () => {
         </p>
         <button
           onClick={handleBack}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700 cursor-pointer"
         >
           Вернуться к списку
         </button>

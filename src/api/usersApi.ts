@@ -1,36 +1,50 @@
 import type { IUser } from '../types/user';
 import { adaptUser } from '../utils/adapters';
 
-// ответ от DummyJSON
+// Ответ от DummyJSON
+interface IRawUser {
+  id: number;
+  firstName: string;
+  lastName: string;
+  image: string;
+  email: string;
+  phone: string;
+  company?: {
+    title?: string;
+    department?: string;
+    name?: string;
+  };
+}
+
 interface IRawUsersResponse {
-  users: Array<{
-    id: number;
-    firstName: string;
-    lastName: string;
-    image: string;
-    email: string;
-    phone: string;
-    company?: {
-      title?: string;
-      department?: string;
-      name?: string;
-    };
-  }>;
+  users: IRawUser[];
   total: number;
   skip: number;
   limit: number;
 }
 
-// Функция для запроса всех пользователей
+// Получение списка пользователей
 export const fetchUsers = async (): Promise<IUser[]> => {
   const response = await fetch('https://dummyjson.com/users?limit=50');
 
   if (!response.ok) {
-    throw new Error('Failed to fetch users from API');
+    throw new Error('Не удалось загрузить пользователей');
   }
 
   const data: IRawUsersResponse = await response.json();
 
-  // Преобразуем каждого сырого пользователя через наш адаптер
   return data.users.map(adaptUser);
+};
+
+// Получение одного пользователя по ID
+export const fetchUserById = async (id: number): Promise<IUser> => {
+  const response = await fetch(`https://dummyjson.com/users/${id}`);
+
+  if (!response.ok) {
+    throw new Error('Пользователь не найден');
+  }
+
+  const user: IRawUser = await response.json();
+
+  return adaptUser(user);
 };
