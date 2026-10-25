@@ -22,7 +22,7 @@ export const ScrollToTop = () => {
       aria-label="Вернуться наверх"
       title="Вернуться наверх"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className={`group fixed left-0 top-0 z-40 flex h-dvh w-16 items-center justify-center border-r transition-all duration-200 focus-visible:outline-2 focus-visible:outline-indigo-500 ${
+      className={`group fixed left-0 top-0 z-40 hidden h-dvh w-16 items-center justify-center border-r transition-all duration-200 focus-visible:outline-2 focus-visible:outline-indigo-500 min-[1300px]:flex ${
         isVisible
           ? 'translate-x-0 cursor-pointer border-gray-200 bg-gray-100/50 opacity-100 hover:border-indigo-200 hover:bg-indigo-50/80'
           : 'pointer-events-none -translate-x-full border-transparent opacity-0'
