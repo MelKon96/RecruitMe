@@ -9,10 +9,12 @@ import { UsersPage } from '../pages/UsersPage';
 import { UserDetailPage } from '../pages/UserDetailPage';
 import { MyResumesPage } from '../pages/MyResumesPage';
 import { CreateResumePage } from '../pages/CreateResumePage';
+import { ChatPage } from '../pages/ChatPage';
 
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import { ScrollToTop } from '../components/ScrollToTop';
+import { MessagesPage } from '../pages/MessagesPage';
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -53,11 +55,25 @@ const createResumeRoute = createRoute({
   component: CreateResumePage,
 });
 
+const chatRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/chat/$userId',
+  component: ChatPage,
+});
+
+const messagesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/messages',
+  component: MessagesPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   userDetailRoute,
   myResumesRoute,
   createResumeRoute,
+  chatRoute,
+  messagesRoute,
 ]);
 
 export const router = createRouter({ routeTree });

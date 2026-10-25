@@ -11,6 +11,7 @@ export const Header = () => {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
             R
           </span>
+
           <span>
             Recruit<span className="text-indigo-600">Me</span>
           </span>
@@ -28,9 +29,15 @@ export const Header = () => {
             Специалисты
           </Link>
 
-          <span className="cursor-not-allowed text-sm font-medium text-gray-400">
+          <Link
+            to="/messages"
+            activeProps={{
+              className: 'text-indigo-600',
+            }}
+            className="text-sm font-medium text-gray-600 transition hover:text-indigo-600"
+          >
             Сообщения
-          </span>
+          </Link>
         </nav>
 
         <Link
