@@ -77,21 +77,29 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-600">
           <div>
             <span className="font-medium text-gray-900">Email:</span>{' '}
-            <a
-              href={`mailto:${user.email}`}
-              className="text-indigo-600 hover:underline"
-            >
-              {user.email}
-            </a>
+            {user.email ? (
+              <a
+                href={`mailto:${user.email}`}
+                className="text-indigo-600 hover:underline"
+              >
+                {user.email}
+              </a>
+            ) : (
+              'Не указан'
+            )}
           </div>
           <div>
             <span className="font-medium text-gray-900">Телефон:</span>{' '}
-            <a
-              href={`tel:${user.phone}`}
-              className="text-indigo-600 hover:underline"
-            >
-              {user.phone}
-            </a>
+            {user.phone.length > 7 ? (
+              <a
+                href={`tel:${user.phone}`}
+                className="text-indigo-600 hover:underline"
+              >
+                {user.phone}
+              </a>
+            ) : (
+              'Не указан'
+            )}
           </div>
         </div>
       </div>
