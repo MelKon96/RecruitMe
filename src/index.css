@@ -14,3 +14,6 @@ html {
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
 }
+input[type='search']::-webkit-search-cancel-button {
+  cursor: pointer;
+}

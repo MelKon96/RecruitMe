@@ -10,7 +10,11 @@ const RESUME_UPDATED_EVENT = 'resume-updated';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
-  const [search, setSearch] = useState('');
+
+  const [search, setSearch] = useState(
+    () => new URLSearchParams(window.location.search).get('search') ?? '',
+  );
+
   const [resume, setResume] = useState<IUser | null>(() => {
     const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
 
@@ -61,14 +65,15 @@ export const UsersPage = () => {
     ? [...(users ?? []).filter((user) => user.id !== resume.id), resume]
     : (users ?? []);
 
-  const normalizedSearch = search.trim().toLowerCase();
+  const searchWords = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
   const filteredUsers = allUsers.filter((user) => {
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
-    const skills = user.skills.join(' ').toLowerCase();
+    const skills = user.skills.map((skill) => skill.toLowerCase());
 
-    return (
-      fullName.includes(normalizedSearch) || skills.includes(normalizedSearch)
+    return searchWords.every(
+      (word) =>
+        fullName.includes(word) || skills.some((skill) => skill.includes(word)),
     );
   });
 
@@ -112,7 +117,7 @@ export const UsersPage = () => {
           type="search"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Имя или технология, например React..."
+          placeholder="Имя и технологии, например Next React James..."
           className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         />
       </div>

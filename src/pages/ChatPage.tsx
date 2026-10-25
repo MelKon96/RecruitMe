@@ -26,6 +26,21 @@ const getConversations = (): IConversation[] => {
 
 export const ChatPage = () => {
   const { userId } = useParams({ from: '/chat/$userId' });
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userId === '-1') {
+      navigate({
+        to: '/users/$id',
+        params: { id: '-1' },
+        replace: true,
+      });
+    }
+  }, [userId, navigate]);
+
+  if (userId === '-1') {
+    return null;
+  }
 
   return <ChatConversation key={userId} userId={userId} />;
 };
@@ -140,7 +155,7 @@ const ChatConversation = ({ userId }: IChatConversationProps) => {
             params: { id: userId },
           })
         }
-        className="mb-6 text-sm font-medium text-gray-600 transition hover:text-indigo-600 cursor-pointer"
+        className="mb-6 cursor-pointer text-sm font-medium text-gray-600 transition hover:text-indigo-600"
       >
         ← Назад к пользователю
       </button>
@@ -189,7 +204,7 @@ const ChatConversation = ({ userId }: IChatConversationProps) => {
           <button
             type="submit"
             disabled={!message.trim() || status !== 'Подключено'}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Отправить
           </button>
