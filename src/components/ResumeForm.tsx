@@ -172,13 +172,15 @@ export const ResumeForm = ({
           >
             О себе
           </label>
+
           <textarea
             id="bio"
             rows={5}
             {...register('bio')}
-            className={inputClassName}
+            className={`${inputClassName} resize-none`}
             placeholder="Расскажите о своём опыте и профессиональных целях"
           />
+
           {errors.bio && <p className={errorClassName}>{errors.bio.message}</p>}
         </div>
 

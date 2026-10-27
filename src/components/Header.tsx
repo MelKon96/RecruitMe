@@ -1,11 +1,21 @@
+import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
+import { Menu, X } from 'lucide-react';
 
 export const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const closeMenu = () => setIsMenuOpen(false);
+
+  const linkClass =
+    'text-sm font-medium text-gray-600 transition hover:text-indigo-600';
+
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link
           to="/"
+          onClick={closeMenu}
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-gray-900"
         >
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
@@ -20,33 +30,76 @@ export const Header = () => {
         <nav className="hidden items-center gap-8 md:flex">
           <Link
             to="/"
-            activeProps={{
-              className: 'text-indigo-600',
-            }}
+            activeProps={{ className: 'text-indigo-600' }}
             activeOptions={{ exact: true }}
-            className="text-sm font-medium text-gray-600 transition hover:text-indigo-600"
+            className={linkClass}
           >
             Специалисты
           </Link>
 
           <Link
             to="/messages"
-            activeProps={{
-              className: 'text-indigo-600',
-            }}
-            className="text-sm font-medium text-gray-600 transition hover:text-indigo-600"
+            activeProps={{ className: 'text-indigo-600' }}
+            className={linkClass}
           >
             Сообщения
           </Link>
+
+          <Link
+            to="/my-resumes"
+            activeProps={{ className: 'text-indigo-600' }}
+            className={linkClass}
+          >
+            Мои резюме
+          </Link>
         </nav>
 
-        <Link
-          to="/my-resumes"
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700"
+        <button
+          type="button"
+          onClick={() => setIsMenuOpen((open) => !open)}
+          className="rounded-lg p-2 text-gray-700 transition hover:bg-gray-100 md:hidden"
+          aria-label={isMenuOpen ? 'Закрыть меню' : 'Открыть меню'}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-navigation"
         >
-          Мои резюме
-        </Link>
+          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </div>
+
+      {isMenuOpen && (
+        <nav
+          id="mobile-navigation"
+          className="flex flex-col gap-1 border-t border-gray-200 px-4 py-3 md:hidden"
+        >
+          <Link
+            to="/"
+            onClick={closeMenu}
+            activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
+            activeOptions={{ exact: true }}
+            className={`${linkClass} rounded-lg px-3 py-3`}
+          >
+            Специалисты
+          </Link>
+
+          <Link
+            to="/messages"
+            onClick={closeMenu}
+            activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
+            className={`${linkClass} rounded-lg px-3 py-3`}
+          >
+            Сообщения
+          </Link>
+
+          <Link
+            to="/my-resumes"
+            onClick={closeMenu}
+            activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
+            className={`${linkClass} rounded-lg px-3 py-3`}
+          >
+            Мои резюме
+          </Link>
+        </nav>
+      )}
     </header>
   );
 };
