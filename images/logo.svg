@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <!-- Градиент для иконки -->
+  <defs>
+    <linearGradient id="rmGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+
+  <!-- Круглый фон/лупа (символ поиска талантов) -->
+  <circle cx="18" cy="18" r="11" fill="none" stroke="url(#rmGrad)" stroke-width="2.5"/>
+  <line x1="26" y1="26" x2="35" y2="35" stroke="url(#rmGrad)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Силуэт кандидата внутри лупы -->
+  <circle cx="18" cy="14" r="3.5" fill="#1E293B"/>
+  <path d="M12 23.5C12 20 14.5 19 18 19C21.5 19 24 20 24 23.5" fill="none" stroke="#1E293B" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Звезда (символ успешного найма / лучшего кандидата) -->
+  <path d="M33 9L34.2 11.4L36.8 11.8L34.9 13.6L35.4 16.2L33 15L30.6 16.2L31.1 13.6L29.2 11.8L31.8 11.4L33 9Z" fill="#F59E0B"/>
+</svg>
