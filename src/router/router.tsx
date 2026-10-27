@@ -2,14 +2,13 @@ import {
   createRootRoute,
   createRoute,
   createRouter,
+  lazyRouteComponent,
   Outlet,
 } from '@tanstack/react-router';
 
 import { UsersPage } from '../pages/UsersPage';
 import { UserDetailPage } from '../pages/UserDetailPage';
 import { MyResumesPage } from '../pages/MyResumesPage';
-import { CreateResumePage } from '../pages/CreateResumePage';
-import { ChatPage } from '../pages/ChatPage';
 
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
@@ -54,13 +53,16 @@ const myResumesRoute = createRoute({
 const createResumeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/create-resume',
-  component: CreateResumePage,
+  component: lazyRouteComponent(
+    () => import('../pages/CreateResumePage'),
+    'CreateResumePage',
+  ),
 });
 
 const chatRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/chat/$userId',
-  component: ChatPage,
+  component: lazyRouteComponent(() => import('../pages/ChatPage'), 'ChatPage'),
 });
 
 const messagesRoute = createRoute({

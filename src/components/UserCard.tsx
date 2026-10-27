@@ -26,9 +26,9 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="font-semibold text-gray-900 truncate">
+            <h2 className="font-semibold text-gray-900 truncate">
               {user.firstName} {user.lastName}
-            </h3>
+            </h2>
             <span
               className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${
                 levelColors[user.level]
