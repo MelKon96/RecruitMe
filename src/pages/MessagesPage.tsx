@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUsers } from '../api/usersApi';
 import type { IUser } from '../types/user';
 import { MessageCircle, Trash2 } from 'lucide-react';
+import { ROUTES } from '../constants/paths';
 
 interface IConversation {
   userId: string;
@@ -35,13 +36,15 @@ export const MessagesPage = () => {
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
   const {
-    data: users,
+    data: usersData,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryFn: () => fetchUsers({ limit: 10 }),
   });
+
+  const users = usersData?.users ?? [];
 
   const handleDelete = (userId: string) => {
     const updatedConversations = getConversations().filter(
@@ -76,7 +79,7 @@ export const MessagesPage = () => {
   }
 
   const visibleConversations = conversations.filter((conversation) =>
-    users?.some((user) => String(user.id) === conversation.userId),
+    users.some((user) => String(user.id) === conversation.userId),
   );
 
   return (
@@ -92,7 +95,7 @@ export const MessagesPage = () => {
           </p>
 
           <button
-            onClick={() => navigate({ to: '/' })}
+            onClick={() => navigate({ to: ROUTES.home })}
             className="mt-5 cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
           >
             Найти разработчика
@@ -101,7 +104,7 @@ export const MessagesPage = () => {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
           {visibleConversations.map((conversation) => {
-            const user = users?.find(
+            const user = users.find(
               (item: IUser) => String(item.id) === conversation.userId,
             );
 
@@ -116,7 +119,7 @@ export const MessagesPage = () => {
                   type="button"
                   onClick={() =>
                     navigate({
-                      to: '/chat/$userId',
+                      to: ROUTES.chat,
                       params: { userId: conversation.userId },
                       search: { from: 'messages' },
                     })

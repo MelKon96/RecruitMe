@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { ROUTES } from '../constants/paths';
 
 export const NotFoundPage = () => {
   return (
@@ -14,7 +15,7 @@ export const NotFoundPage = () => {
       </p>
 
       <Link
-        to="/"
+        to={ROUTES.home}
         className="mt-6 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
       >
         На главную

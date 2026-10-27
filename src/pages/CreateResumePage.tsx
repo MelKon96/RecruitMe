@@ -6,6 +6,7 @@ import type { DevLevel, IUser } from '../types/user';
 import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
+import { ROUTES } from '../constants/paths';
 
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
@@ -21,7 +22,6 @@ const getSavedResume = (): IUser | null => {
 export const CreateResumePage = () => {
   const navigate = useNavigate();
   const [savedResume] = useState<IUser | null>(getSavedResume);
-
   const [skills, setSkills] = useState<string[]>(savedResume?.skills ?? []);
 
   const {
@@ -79,7 +79,7 @@ export const CreateResumePage = () => {
     localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(resume));
     window.dispatchEvent(new Event('resume-updated'));
 
-    navigate({ to: '/my-resumes' });
+    navigate({ to: ROUTES.myResumes });
   };
 
   return (

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
+import { ROUTES } from '../constants/paths';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ export const Header = () => {
     <header className="border-b border-gray-200 bg-white">
       <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link
-          to="/"
+          to={ROUTES.home}
           onClick={closeMenu}
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-gray-900"
         >
@@ -29,7 +30,7 @@ export const Header = () => {
 
         <nav className="hidden items-center gap-8 md:flex">
           <Link
-            to="/"
+            to={ROUTES.home}
             activeProps={{ className: 'text-indigo-600' }}
             activeOptions={{ exact: true }}
             className={linkClass}
@@ -38,7 +39,7 @@ export const Header = () => {
           </Link>
 
           <Link
-            to="/messages"
+            to={ROUTES.messages}
             activeProps={{ className: 'text-indigo-600' }}
             className={linkClass}
           >
@@ -46,7 +47,7 @@ export const Header = () => {
           </Link>
 
           <Link
-            to="/my-resumes"
+            to={ROUTES.myResumes}
             activeProps={{ className: 'text-indigo-600' }}
             className={linkClass}
           >
@@ -72,7 +73,7 @@ export const Header = () => {
           className="flex flex-col gap-1 border-t border-gray-200 px-4 py-3 md:hidden"
         >
           <Link
-            to="/"
+            to={ROUTES.home}
             onClick={closeMenu}
             activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
             activeOptions={{ exact: true }}
@@ -82,7 +83,7 @@ export const Header = () => {
           </Link>
 
           <Link
-            to="/messages"
+            to={ROUTES.messages}
             onClick={closeMenu}
             activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
             className={`${linkClass} rounded-lg px-3 py-3`}
@@ -91,7 +92,7 @@ export const Header = () => {
           </Link>
 
           <Link
-            to="/my-resumes"
+            to={ROUTES.myResumes}
             onClick={closeMenu}
             activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
             className={`${linkClass} rounded-lg px-3 py-3`}

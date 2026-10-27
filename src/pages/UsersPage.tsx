@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState, useRef } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { fetchUsers } from '../api/usersApi';
+import { fetchUsersPage } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
 import type { IUser } from '../types/user';
+import { ROUTES } from '../constants/paths';
 
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 const RESUME_UPDATED_EVENT = 'resume-updated';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const [search, setSearch] = useState(
     () => new URLSearchParams(window.location.search).get('search') ?? '',
@@ -17,9 +19,7 @@ export const UsersPage = () => {
 
   const [resume, setResume] = useState<IUser | null>(() => {
     const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-
     if (!savedResume) return null;
-
     try {
       return JSON.parse(savedResume) as IUser;
     } catch {
@@ -30,12 +30,10 @@ export const UsersPage = () => {
   useEffect(() => {
     const updateResume = () => {
       const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-
       if (!savedResume) {
         setResume(null);
         return;
       }
-
       try {
         setResume(JSON.parse(savedResume) as IUser);
       } catch {
@@ -53,17 +51,45 @@ export const UsersPage = () => {
   }, []);
 
   const {
-    data: users,
+    data,
     isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
     error,
-  } = useQuery({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
+  } = useInfiniteQuery({
+    queryKey: ['users-infinite'],
+    queryFn: ({ pageParam, signal }) => fetchUsersPage({ pageParam, signal }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextSkip,
   });
 
+  // Наблюдатель за скроллом
+  useEffect(() => {
+    const currentRef = loadMoreRef.current;
+    if (!currentRef) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    observer.observe(currentRef);
+
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const users = data?.pages.flatMap((page) => page.users) ?? [];
+
   const allUsers = resume
-    ? [...(users ?? []).filter((user) => user.id !== resume.id), resume]
-    : (users ?? []);
+    ? [...users.filter((user) => user.id !== resume.id), resume]
+    : users;
 
   const searchWords = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
@@ -85,7 +111,7 @@ export const UsersPage = () => {
     );
   }
 
-  if (error || !users) {
+  if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center text-red-600">
         Ошибка при загрузке пользователей.
@@ -123,20 +149,31 @@ export const UsersPage = () => {
       </div>
 
       {filteredUsers.length > 0 ? (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredUsers.map((user) => (
-            <UserCard
-              key={user.id}
-              user={user}
-              onClick={() =>
-                navigate({
-                  to: '/users/$id',
-                  params: { id: String(user.id) },
-                })
-              }
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredUsers.map((user) => (
+              <UserCard
+                key={user.id}
+                user={user}
+                onClick={() =>
+                  navigate({
+                    to: ROUTES.users,
+                    params: { id: String(user.id) },
+                  })
+                }
+              />
+            ))}
+          </div>
+
+          <div ref={loadMoreRef} className="py-10 text-center">
+            {isFetchingNextPage && (
+              <p className="text-sm text-gray-500">Загрузка порции...</p>
+            )}
+            {!hasNextPage && users.length > 0 && (
+              <p className="text-sm text-gray-400">Все специалисты загружены</p>
+            )}
+          </div>
+        </>
       ) : (
         <p className="py-12 text-center text-gray-500">
           Специалисты по вашему запросу не найдены.

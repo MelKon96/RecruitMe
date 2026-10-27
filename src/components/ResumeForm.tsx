@@ -3,6 +3,7 @@ import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import type { DevLevel } from '../types/user';
 import { SkillsInput } from './SkillsInput';
+import { ROUTES } from '../constants/paths';
 
 interface ResumeFormProps {
   register: UseFormRegister<ResumeFormValues>;
@@ -31,7 +32,7 @@ export const ResumeForm = ({
   return (
     <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <Link
-        to="/my-resumes"
+        to={ROUTES.myResumes}
         className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
       >
         ← Назад к моим резюме

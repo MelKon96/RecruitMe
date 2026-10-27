@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUsers } from '../api/usersApi';
 import { UserDetailCard } from '../components/UserDetailCard';
 import type { IUser } from '../types/user';
+import { ROUTES } from '../constants/paths';
 
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
@@ -11,16 +12,18 @@ export const UserDetailPage = () => {
   const navigate = useNavigate();
 
   const {
-    data: users,
+    data: usersData,
     isLoading,
     error,
   } = useQuery({
     queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryFn: () => fetchUsers({ limit: 10 }),
   });
 
+  const users = usersData?.users ?? [];
+
   const handleBack = () => {
-    navigate({ to: '/' });
+    navigate({ to: ROUTES.home });
   };
 
   if (isLoading) {
@@ -31,7 +34,7 @@ export const UserDetailPage = () => {
     );
   }
 
-  if (error || !users) {
+  if (error || !usersData) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-20 text-center">
         <h2 className="mb-2 text-xl font-bold text-red-600">Ошибка загрузки</h2>
@@ -74,7 +77,7 @@ export const UserDetailPage = () => {
         </p>
         <button
           onClick={handleBack}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700 cursor-pointer"
+          className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700"
         >
           Вернуться к списку
         </button>

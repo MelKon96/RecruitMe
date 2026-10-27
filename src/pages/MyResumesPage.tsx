@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
 import { Pencil, Trash2 } from 'lucide-react';
+import { ROUTES } from '../constants/paths';
 
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
@@ -69,7 +70,7 @@ export const MyResumesPage = () => {
           </p>
 
           <Link
-            to="/create-resume"
+            to={ROUTES.createResume}
             className="mt-6 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
           >
             Создать резюме
@@ -100,7 +101,7 @@ export const MyResumesPage = () => {
 
             <div className="flex items-center gap-3">
               <Link
-                to="/create-resume"
+                to={ROUTES.createResume}
                 aria-label="Редактировать резюме"
                 title="Редактировать резюме"
                 className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600"

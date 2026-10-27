@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUserById } from '../api/usersApi';
 import type { IUser } from '../types/user';
+import { ROUTES } from '../constants/paths';
 
 interface IMessage {
   id: string;
@@ -29,10 +30,12 @@ const getConversations = (): IConversation[] => {
 
 export const ChatPage = () => {
   const { userId } = useParams({ from: '/chat/$userId' });
+
   const search = useSearch({
     from: '/chat/$userId',
     shouldThrow: false,
   }) as { from?: string };
+
   const navigate = useNavigate();
 
   const isValidId = /^\d+$/.test(userId) && Number(userId) > 0;
@@ -44,7 +47,7 @@ export const ChatPage = () => {
   useEffect(() => {
     if (userId === '-1') {
       navigate({
-        to: '/users/$id',
+        to: ROUTES.users,
         params: { id: '-1' },
         replace: true,
       });
@@ -122,7 +125,7 @@ const ChatError = ({ message, onRetry }: IChatErrorProps) => {
 
         <button
           type="button"
-          onClick={() => navigate({ to: '/' })}
+          onClick={() => navigate({ to: ROUTES.home })}
           className="cursor-pointer rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
         >
           На главную
@@ -243,19 +246,19 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
 
   const handleBack = () => {
     if (fromMessages) {
-      navigate({ to: '/messages' });
+      navigate({ to: ROUTES.messages });
       return;
     }
 
     if (search.from === 'user') {
       navigate({
-        to: '/users/$id',
+        to: ROUTES.users,
         params: { id: userId },
       });
       return;
     }
 
-    navigate({ to: '/' });
+    navigate({ to: ROUTES.home });
   };
 
   return (

@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
+import { ROUTES } from '../constants/paths';
 
 interface IUserDetailCardProps {
   user: IUser;
@@ -18,7 +19,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
 
   const handleSkillClick = (skill: string) => {
     navigate({
-      to: '/',
+      to: ROUTES.home,
       search: { search: skill },
     });
   };
@@ -111,7 +112,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
               type="button"
               onClick={() =>
                 navigate({
-                  to: '/chat/$userId',
+                  to: ROUTES.chat,
                   params: { userId: String(user.id) },
                   search: { from: 'user' },
                 })

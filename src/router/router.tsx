@@ -80,7 +80,10 @@ const routeTree = rootRoute.addChildren([
   messagesRoute,
 ]);
 
-export const router = createRouter({ routeTree });
+export const router = createRouter({
+  routeTree,
+  basepath: '/RecruitMe',
+});
 
 declare module '@tanstack/react-router' {
   interface Register {
