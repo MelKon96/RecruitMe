@@ -82,7 +82,7 @@ const routeTree = rootRoute.addChildren([
 
 export const router = createRouter({
   routeTree,
-  basepath: '/RecruitMe',
+  basepath: import.meta.env.PROD ? '/RecruitMe' : '/',
 });
 
 declare module '@tanstack/react-router' {
