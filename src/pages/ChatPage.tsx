@@ -5,6 +5,7 @@ import { fetchUserById } from '../api/usersApi';
 import type { IUser } from '../types/user';
 import { ROUTES } from '../constants/paths';
 
+// Здесь можно забрать IMessage, IConversation и getConversations в общий storage с MessagesPage и разнести ChatError / ChatConversation по файлам: страница, сокет и localStorage сейчас в одном модуле.
 interface IMessage {
   id: string;
   text: string;
@@ -31,6 +32,7 @@ const getConversations = (): IConversation[] => {
 export const ChatPage = () => {
   const { userId } = useParams({ from: '/chat/$userId' });
 
+  // Здесь можно убрать as { from?: string }: тип даст validateSearch у роута /chat/$userId. Тот же useSearch повторяется в ChatConversation — from лучше передать пропсом. userId === '-1' ниже стоит заменить на String(OWN_RESUME_ID).
   const search = useSearch({
     from: '/chat/$userId',
     shouldThrow: false,
@@ -143,6 +145,7 @@ interface IChatConversationProps {
 const ChatConversation = ({ userId, user }: IChatConversationProps) => {
   const navigate = useNavigate();
 
+  // Здесь можно не вызывать useSearch второй раз, а получить from из пропсов ChatConversation.
   const search = useSearch({
     from: '/chat/$userId',
     shouldThrow: false,
@@ -196,6 +199,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
       localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(conversations));
     }
 
+    // Здесь можно вынести сокет, статус и сохранение сообщений в хук useChatSocket(userId).
     const socket = new WebSocket('wss://ws.ifelse.io');
     socketRef.current = socket;
 

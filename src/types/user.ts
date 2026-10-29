@@ -1,3 +1,4 @@
+// Здесь можно вывести union из константы DEV_LEVELS (as const), чтобы уровни не расходились со схемой и формой.
 export type DevLevel = 'Junior' | 'Middle' | 'Senior' | 'Lead';
 
 export interface IUser {
@@ -18,7 +19,7 @@ export interface IUser {
   location?: string;
 }
 
-// Параметры фильтрации для поиска
+// Здесь можно удалить IFilterParams: тип нигде не используется. Либо подключить его к поиску на UsersPage (search, skills, level).
 export interface IFilterParams {
   search: string;
   skills: string[];

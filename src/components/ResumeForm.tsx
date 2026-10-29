@@ -14,6 +14,7 @@ interface ResumeFormProps {
   submitLabel?: string;
 }
 
+// Здесь можно импортировать DEV_LEVELS вместо локального levels и собрать повторяющиеся label + input + ошибка в компонент Field.
 const levels: DevLevel[] = ['Junior', 'Middle', 'Senior', 'Lead'];
 
 const inputClassName =
@@ -29,6 +30,7 @@ export const ResumeForm = ({
   onSubmit,
   submitLabel = 'Создать резюме',
 }: ResumeFormProps) => {
+  // Здесь можно оставить только form: страница CreateResumePage уже оборачивает форму в section с заголовком, получается вложенная вёрстка и двойные отступы.
   return (
     <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <Link

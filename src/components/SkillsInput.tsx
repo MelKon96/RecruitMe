@@ -83,6 +83,7 @@ export const SkillsInput = ({
             setIsSuggestionsOpen(true);
           }}
           onFocus={() => setIsSuggestionsOpen(true)}
+          // Здесь можно закрывать подсказки по клику снаружи через ref: setTimeout(150) нужен только чтобы успеть поймать click по пункту, хотя onMouseDown на кнопке уже вызывает preventDefault.
           onBlur={() => {
             setTimeout(() => setIsSuggestionsOpen(false), 150);
           }}
@@ -145,6 +146,7 @@ export const SkillsInput = ({
         </ul>
       )}
 
+      {/* Здесь можно убрать скрытое поле, если skills в схеме станут string[] и значение пойдёт через Controller или setValue без join через запятую. */}
       <input type="hidden" {...register('skills')} />
 
       <p className="mt-2 text-xs text-gray-500">

@@ -16,6 +16,7 @@ import { ScrollToTop } from '../components/ScrollToTop';
 import { MessagesPage } from '../pages/MessagesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
+// Здесь можно вынести разметку в components/RootLayout.tsx, пути взять из constants/paths.ts и добавить validateSearch для / и /chat/$userId, чтобы поиск и параметр from были типизированы.
 const rootRoute = createRootRoute({
   component: () => (
     <div className="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900">

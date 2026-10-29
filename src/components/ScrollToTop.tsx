@@ -30,6 +30,7 @@ export const ScrollToTop = () => {
       tabIndex={isVisible ? 0 : -1}
     >
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white opacity-70 shadow-sm transition-all duration-200 group-hover:scale-110 group-hover:opacity-100 group-focus-visible:opacity-100">
+        {/* Здесь можно заменить ручной svg на ChevronUp из lucide-react: пакет уже используется в Header и страницах. */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

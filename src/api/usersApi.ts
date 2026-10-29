@@ -1,6 +1,7 @@
 import type { IUser } from '../types/user';
 import { adaptUser } from '../utils/adapters';
 
+// Здесь можно импортировать общий тип сырого пользователя из одного модуля с адаптером, а не описывать IRawUser второй раз.
 interface IRawUser {
   id: number;
   firstName: string;
@@ -32,6 +33,7 @@ export const fetchUsers = async ({
     signal,
   });
 
+  // Здесь можно вынести проверку response.ok и response.json() в requestJson<T>(url, signal): то же самое повторяется в fetchUserById.
   if (!response.ok) {
     throw new Error('Не удалось загрузить пользователей');
   }
@@ -45,6 +47,7 @@ export const fetchUsers = async ({
 };
 
 
+// Здесь можно завести queryKeys (users, user(id), usersInfinite) рядом с функциями API: сейчас ключи ['users'], ['user', id] и ['users-infinite'] размазаны по страницам.
 export const fetchUsersPage = async ({
   pageParam = 0,
   signal,

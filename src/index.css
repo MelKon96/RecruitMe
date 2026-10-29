@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 
+/* Здесь можно оставить у #root только колонку на всю ширину: max-width 1200px и padding дублируют max-w-7xl и px-4 на страницах, шапка и контент сужаются дважды. */
 #root {
   min-height: 100vh;
   display: flex;

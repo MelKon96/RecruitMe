@@ -1,6 +1,6 @@
 import type { IUser, DevLevel } from '../types/user';
 
-
+// Здесь можно вынести один тип сырого ответа dummyjson: IRawDummyUser совпадает с IRawUser в api/usersApi.ts.
 interface IRawDummyUser {
   id: number;
   firstName: string;
@@ -16,6 +16,7 @@ interface IRawDummyUser {
 }
 
 
+// Здесь можно не дублировать стек, а брать навыки из constants/technologies.ts.
 const POSSIBLE_SKILLS = [
   'React',
   'TypeScript',
@@ -29,6 +30,7 @@ const POSSIBLE_SKILLS = [
   'Maven',
 ];
 
+// Здесь можно завести общую константу DEV_LEVELS и из неё вывести DevLevel, zod-enum и опции селекта в ResumeForm.
 const POSSIBLE_LEVELS: DevLevel[] = ['Junior', 'Middle', 'Senior', 'Lead'];
 
 const getRandomSkills = (id: number): string[] => {
@@ -63,6 +65,7 @@ export const adaptUser = (rawUser: IRawDummyUser): IUser => {
     },
     skills: getRandomSkills(rawUser.id),
     level: getDevLevel(rawUser.id),
+    // Здесь можно не подставлять один и тот же bio всем пользователям: собирать текст из должности и уровня или оставлять пустым, если в API его нет.
     bio: `Frontend & Fullstack developer. Passionate about clean code, robust architectures, and great UI/UX.`,
   };
 };

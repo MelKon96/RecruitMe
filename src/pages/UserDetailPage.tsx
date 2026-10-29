@@ -12,6 +12,7 @@ export const UserDetailPage = () => {
   const navigate = useNavigate();
   const numericId = Number(id);
 
+  // Здесь можно не читать localStorage в теле компонента на каждый рендер, а взять тот же useResume(), что и на остальных страницах.
   let ownResume: IUser | null = null;
   const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
   if (savedResume) {

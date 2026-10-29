@@ -1,3 +1,4 @@
+// Здесь можно использовать этот список и в utils/adapters.ts: там свой урезанный POSSIBLE_SKILLS.
 export const technologies = [
   'JavaScript',
   'TypeScript',

@@ -6,6 +6,7 @@ import type { IUser } from '../types/user';
 import { MessageCircle, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
 
+// Здесь можно перенести IConversation, CONVERSATIONS_KEY и getConversations в storage/conversationsStorage.ts: копия лежит в ChatPage.tsx.
 interface IConversation {
   userId: string;
   lastMessage?: string;
@@ -41,6 +42,7 @@ export const MessagesPage = () => {
     error,
   } = useQuery({
     queryKey: ['users'],
+    // Здесь можно грузить пользователей по id из переписок, а не первые 10: диалог с человеком вне этой страницы dummyjson пропадёт из списка.
     queryFn: () => fetchUsers({ limit: 10 }),
   });
 

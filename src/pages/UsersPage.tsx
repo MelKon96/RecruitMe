@@ -6,6 +6,7 @@ import { UserCard } from '../components/UserCard';
 import type { IUser } from '../types/user';
 import { ROUTES } from '../constants/paths';
 
+// Здесь можно заменить ключ, парсинг JSON и событие resume-updated на хук useResume() из общего storage: то же самое скопировано в UserDetailPage, MyResumesPage и CreateResumePage.
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 const RESUME_UPDATED_EVENT = 'resume-updated';
 
@@ -13,6 +14,7 @@ export const UsersPage = () => {
   const navigate = useNavigate();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
+  // Здесь можно читать и писать поиск через useSearch/useNavigate роутера: сейчас query читается один раз из window.location и не синхронизируется с ?search=, который ставит UserDetailCard.
   const [search, setSearch] = useState(
     () => new URLSearchParams(window.location.search).get('search') ?? '',
   );
@@ -64,7 +66,7 @@ export const UsersPage = () => {
     getNextPageParam: (lastPage) => lastPage.nextSkip,
   });
 
-  // Наблюдатель за скроллом
+  // Здесь можно вынести IntersectionObserver в хук useInfiniteScroll(loadMoreRef, { hasNextPage, isFetchingNextPage, fetchNextPage }).
   useEffect(() => {
     const currentRef = loadMoreRef.current;
     if (!currentRef) return;
@@ -91,6 +93,7 @@ export const UsersPage = () => {
     ? [...users.filter((user) => user.id !== resume.id), resume]
     : users;
 
+  // Здесь можно вынести фильтр по имени и навыкам в utils/filterUsers.ts: страница совмещает загрузку, localStorage, скролл и поиск.
   const searchWords = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
 
   const filteredUsers = allUsers.filter((user) => {

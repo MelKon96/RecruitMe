@@ -8,6 +8,7 @@ import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
 import { ROUTES } from '../constants/paths';
 
+// Здесь можно убрать свой getSavedResume и писать через общий storage: ключ recruit_me_resume и событие resume-updated уже есть на трёх других страницах.
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
 const getSavedResume = (): IUser | null => {
@@ -56,6 +57,7 @@ export const CreateResumePage = () => {
   };
 
   const onSubmit = (data: ResumeFormValues) => {
+    // Здесь можно вынести сборку IUser в toResume(data) и заменить id: -1 на константу OWN_RESUME_ID: это же число проверяется в UserDetailCard и ChatPage.
     const resume: IUser = {
       id: -1,
       firstName: data.firstName,
@@ -71,6 +73,7 @@ export const CreateResumePage = () => {
         name: data.companyName,
       },
       skills,
+      // Здесь можно убрать as DevLevel, если enum схемы и тип DevLevel берутся из одной константы DEV_LEVELS.
       level: data.level as DevLevel,
       bio: data.bio,
       location: data.location || undefined,

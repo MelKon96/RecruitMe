@@ -4,6 +4,7 @@ import type { IUser } from '../types/user';
 import { Pencil, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
 
+// Здесь можно читать и удалять резюме через общий storage-модуль: ключ и JSON.parse повторяются на UsersPage, UserDetailPage и CreateResumePage, событие resume-updated — строковый литерал.
 const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
 export const MyResumesPage = () => {
@@ -42,6 +43,7 @@ export const MyResumesPage = () => {
       {!resume ? (
         <div className="flex min-h-[45vh] flex-col items-center justify-center text-center">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
+            {/* Здесь можно поставить иконку FileText из lucide-react: Pencil и Trash2 на этой странице уже оттуда, а svg нарисован вручную. */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="32"
@@ -78,6 +80,7 @@ export const MyResumesPage = () => {
         </div>
       ) : (
         <article className="mt-8 max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+          {/* Здесь можно собрать карточку резюме из тех же блоков, что UserDetailCard (навыки, о себе, контакты), а не верстать профиль второй раз. */}
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-4">
               <img

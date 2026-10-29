@@ -5,6 +5,7 @@ interface IUserCardProps {
   onClick: () => void;
 }
 
+// Здесь можно вынести levelColors в constants/levelColors.ts или компонент LevelBadge: тот же объект скопирован в UserDetailCard.tsx.
 const levelColors: Record<IUser['level'], string> = {
   Junior: 'bg-green-100 text-green-800 border-green-200',
   Middle: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -13,6 +14,7 @@ const levelColors: Record<IUser['level'], string> = {
 };
 
 export const UserCard = ({ user, onClick }: IUserCardProps) => {
+  // Здесь можно сделать button или article с клавиатурным обработчиком: div с onClick не получает фокус.
   return (
     <div
       onClick={onClick}
