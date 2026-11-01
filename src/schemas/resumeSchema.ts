@@ -7,7 +7,7 @@ export const resumeSchema = z.object({
   position: z.string().trim().min(1, 'Укажите желаемую должность'),
   level: z.enum(DEV_LEVELS),
   email: z.email('Введите корректный email'),
-  phone: z.string(),
+  phone: z.string().trim().min(1, 'Введите номер телефона'),
   skills: z.array(z.string()).min(1, 'Укажите хотя бы один навык'),
   bio: z.string().trim().min(1, 'Расскажите о себе'),
   companyName: z.string(),

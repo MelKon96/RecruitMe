@@ -157,6 +157,9 @@ export const ResumeForm = ({
               className={inputClassName}
               placeholder="+7 900 123-45-67"
             />
+            {errors.phone && (
+              <p className={errorClassName}>{errors.phone.message}</p>
+            )}
           </div>
         </div>
 
