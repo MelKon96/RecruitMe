@@ -2,18 +2,13 @@ import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
 import { ROUTES } from '../constants/paths';
 import { OWN_RESUME_ID } from '../constants/id';
+import { LEVEL_COLORS } from '../constants/levelColors';
 
 interface IUserDetailCardProps {
   user: IUser;
   onBack: () => void;
 }
 
-const levelColors: Record<IUser['level'], string> = {
-  Junior: 'bg-green-100 text-green-800 border-green-200',
-  Middle: 'bg-blue-100 text-blue-800 border-blue-200',
-  Senior: 'bg-purple-100 text-purple-800 border-purple-200',
-  Lead: 'bg-amber-100 text-amber-800 border-amber-200',
-};
 
 export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
   const navigate = useNavigate();
@@ -49,7 +44,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
               </h1>
 
               <span
-                className={`self-center rounded-full border px-3 py-1 text-xs font-semibold sm:self-auto ${levelColors[user.level]}`}
+                className={`self-center rounded-full border px-3 py-1 text-xs font-semibold sm:self-auto ${LEVEL_COLORS[user.level]}`}
               >
                 {user.level}
               </span>

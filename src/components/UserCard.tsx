@@ -1,16 +1,12 @@
 import type { IUser } from '../types/user';
+import {LEVEL_COLORS} from '../constants/levelColors';
 
 interface IUserCardProps {
   user: IUser;
   onClick: () => void;
 }
 
-const levelColors: Record<IUser['level'], string> = {
-  Junior: 'bg-green-100 text-green-800 border-green-200',
-  Middle: 'bg-blue-100 text-blue-800 border-blue-200',
-  Senior: 'bg-purple-100 text-purple-800 border-purple-200',
-  Lead: 'bg-amber-100 text-amber-800 border-amber-200',
-};
+
 
 export const UserCard = ({ user, onClick }: IUserCardProps) => {
   return (
@@ -31,7 +27,7 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
             </h2>
             <span
               className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${
-                levelColors[user.level]
+                LEVEL_COLORS[user.level]
               }`}
             >
               {user.level}
