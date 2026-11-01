@@ -1,6 +1,6 @@
 import type { IUser } from '../types/user';
-import { adaptUser } from '../utils/adapters';
 import type { IRawUser } from '../types/rawUser';
+import { adaptUser } from '../utils/adapters';
 
 interface IRawUsersResponse {
   users: IRawUser[];
@@ -9,27 +9,39 @@ interface IRawUsersResponse {
   limit: number;
 }
 
-// 1. Обычный метод для MessagesPage и UserDetailPage (принимает limit и skip опционально)
+const requestJson = async <T>(
+  url: string,
+  signal?: AbortSignal,
+  errorMessage = 'Не удалось загрузить данные',
+): Promise<T> => {
+  const response = await fetch(url, { signal });
+
+  if (!response.ok) {
+    throw new Error(errorMessage);
+  }
+
+  return response.json() as Promise<T>;
+};
+
+export const queryKeys = {
+  users: ['users'] as const,
+  user: (id: number) => ['user', id] as const,
+  usersInfinite: ['users-infinite'] as const,
+};
+
 export const fetchUsers = async ({
   signal,
   limit = 10,
   skip = 0,
-}: { signal?: AbortSignal; limit?: number; skip?: number } = {}): Promise<{
-  users: IUser[];
-  total: number;
-}> => {
-  const response = await fetch(
+}: {
+  signal?: AbortSignal;
+  limit?: number;
+  skip?: number;
+} = {}): Promise<{ users: IUser[]; total: number }> => {
+  const data = await requestJson<IRawUsersResponse>(
     `https://dummyjson.com/users?limit=${limit}&skip=${skip}`,
-    {
-      signal,
-    },
+    signal,
   );
-
-  if (!response.ok) {
-    throw new Error('Не удалось загрузить пользователей');
-  }
-
-  const data: IRawUsersResponse = await response.json();
 
   return {
     users: data.users.map(adaptUser),
@@ -59,13 +71,11 @@ export const fetchUserById = async (
   id: number,
   { signal }: { signal?: AbortSignal } = {},
 ): Promise<IUser> => {
-  const response = await fetch(`https://dummyjson.com/users/${id}`, { signal });
-
-  if (!response.ok) {
-    throw new Error('Пользователь не найден');
-  }
-
-  const user: IRawUser = await response.json();
+  const user = await requestJson<IRawUser>(
+    `https://dummyjson.com/users/${id}`,
+    signal,
+    'Пользователь не найден',
+  );
 
   return adaptUser(user);
 };

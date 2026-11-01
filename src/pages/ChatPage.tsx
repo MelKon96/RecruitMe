@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserById } from '../api/usersApi';
+import { fetchUserById, queryKeys } from '../api/usersApi';
 import type { IUser } from '../types/user';
 import type { IMessage, IConversation } from '../types/conversation';
 import {
@@ -43,7 +43,7 @@ export const ChatPage = () => {
     isError,
     refetch,
   } = useQuery({
-    queryKey: ['user', userId],
+    queryKey: queryKeys.user(Number(userId)),
     queryFn: () => fetchUserById(Number(userId)),
     enabled: isValidId && !isOwnResume && isValidFrom,
     retry: false,

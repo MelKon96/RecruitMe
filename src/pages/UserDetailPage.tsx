@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import { fetchUserById } from '../api/usersApi';
+import { fetchUserById, queryKeys } from '../api/usersApi';
 import { UserDetailCard } from '../components/UserDetailCard';
 import { useResume } from '../hooks/useResume';
 import { ROUTES } from '../constants/paths';
@@ -14,7 +14,7 @@ export const UserDetailPage = () => {
   const isOwnResume = ownResume !== null && ownResume.id === numericId;
 
   const { data: fetchedUser, isLoading } = useQuery({
-    queryKey: ['user', numericId],
+    queryKey: queryKeys.user(numericId),
     queryFn: ({ signal }) => fetchUserById(numericId, { signal }),
     enabled: !isOwnResume,
   });

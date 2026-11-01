@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import { fetchUsers } from '../api/usersApi';
+import { fetchUsers, queryKeys } from '../api/usersApi';
 import type { IUser } from '../types/user';
 import { MessageCircle, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
@@ -40,7 +40,7 @@ export const MessagesPage = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['users'],
+    queryKey: queryKeys.users,
     queryFn: () => fetchUsers({ limit: 10 }),
   });
 

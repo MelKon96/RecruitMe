@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { fetchUsersPage } from '../api/usersApi';
+import { fetchUsersPage, queryKeys } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
 import { ROUTES } from '../constants/paths';
 import { useResume } from '../hooks/useResume';
@@ -23,7 +23,7 @@ export const UsersPage = () => {
     fetchNextPage,
     error,
   } = useInfiniteQuery({
-    queryKey: ['users-infinite'],
+    queryKey: queryKeys.usersInfinite,
     queryFn: ({ pageParam, signal }) => fetchUsersPage({ pageParam, signal }),
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextSkip,
