@@ -14,3 +14,13 @@ export const getConversations = (): IConversation[] => {
 export const saveConversations = (conversations: IConversation[]): void => {
   localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(conversations));
 };
+
+export const removeConversation = (userId: string): IConversation[] => {
+  const updatedConversations = getConversations().filter(
+    (conversation) => conversation.userId !== userId,
+  );
+
+  saveConversations(updatedConversations);
+
+  return updatedConversations;
+};
