@@ -22,9 +22,7 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.home,
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { search?: string } => {
+  validateSearch: (search: Record<string, unknown>): { search?: string } => {
     const value = search.search;
 
     return typeof value === 'string' && value.length > 0
@@ -58,13 +56,13 @@ const createResumeRoute = createRoute({
 const chatRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.chat,
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { from?: 'user' | 'messages' } => ({
     from:
-      search.from === 'user'
-        ? ('user' as const)
-        : search.from === 'messages'
-          ? ('messages' as const)
-          : undefined,
+      search.from === 'user' || search.from === 'messages'
+        ? search.from
+        : undefined,
   }),
   component: lazyRouteComponent(() => import('../pages/ChatPage'), 'ChatPage'),
 });
