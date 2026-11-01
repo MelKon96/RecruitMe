@@ -3,30 +3,12 @@ import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUserById } from '../api/usersApi';
 import type { IUser } from '../types/user';
+import type { IMessage, IConversation } from '../types/conversation';
+import {
+  getConversations,
+  saveConversations,
+} from '../storage/conversationsStorage';
 import { ROUTES } from '../constants/paths';
-
-interface IMessage {
-  id: string;
-  text: string;
-  sender: 'user' | 'other';
-}
-
-interface IConversation {
-  userId: string;
-  lastMessage?: string;
-  messages?: IMessage[];
-}
-
-const CONVERSATIONS_KEY = 'recruit_me_conversations';
-
-const getConversations = (): IConversation[] => {
-  try {
-    const stored = localStorage.getItem(CONVERSATIONS_KEY);
-    return stored ? (JSON.parse(stored) as IConversation[]) : [];
-  } catch {
-    return [];
-  }
-};
 
 export const ChatPage = () => {
   const { userId } = useParams({ from: '/chat/$userId' });
@@ -183,7 +165,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
         };
       }
 
-      localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(conversations));
+      saveConversations(conversations);
     },
     [userId],
   );
@@ -193,7 +175,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
 
     if (!conversations.some((item) => item.userId === userId)) {
       conversations.unshift({ userId });
-      localStorage.setItem(CONVERSATIONS_KEY, JSON.stringify(conversations));
+      saveConversations(conversations);
     }
 
     const socket = new WebSocket('wss://ws.ifelse.io');
