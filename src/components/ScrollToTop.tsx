@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ChevronUp } from 'lucide-react';
 
 export const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -30,19 +31,7 @@ export const ScrollToTop = () => {
       tabIndex={isVisible ? 0 : -1}
     >
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-white opacity-70 shadow-sm transition-all duration-200 group-hover:scale-110 group-hover:opacity-100 group-focus-visible:opacity-100">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="h-4 w-4"
-          aria-hidden="true"
-        >
-          <path d="m18 15-6-6-6 6" />
-        </svg>
+        <ChevronUp size={16} aria-hidden="true" />
       </span>
     </button>
   );
