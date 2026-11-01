@@ -1,18 +1,17 @@
 import type { IUser } from '../types/user';
-import {LEVEL_COLORS} from '../constants/levelColors';
+import { LEVEL_COLORS } from '../constants/levelColors';
 
 interface IUserCardProps {
   user: IUser;
   onClick: () => void;
 }
 
-
-
 export const UserCard = ({ user, onClick }: IUserCardProps) => {
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-4"
+      className="w-full text-left bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-4"
     >
       <div className="flex items-start gap-4">
         <img
@@ -20,11 +19,13 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
           alt={`${user.firstName} ${user.lastName}`}
           className="w-14 h-14 rounded-full object-cover border border-gray-100"
         />
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <h2 className="font-semibold text-gray-900 truncate">
               {user.firstName} {user.lastName}
             </h2>
+
             <span
               className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${
                 LEVEL_COLORS[user.level]
@@ -33,6 +34,7 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
               {user.level}
             </span>
           </div>
+
           <p className="text-sm text-gray-500 truncate">{user.company.title}</p>
         </div>
       </div>
@@ -50,10 +52,11 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
 
       <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
         <span>{user.email}</span>
+
         <span className="text-indigo-600 font-medium hover:underline">
           Профиль →
         </span>
       </div>
-    </div>
+    </button>
   );
 };
