@@ -1,31 +1,17 @@
 import type { IUser } from '../types/user';
 import { DEV_LEVELS, type DevLevel } from '../constants/devLevels';
 import type { IRawUser } from '../types/rawUser';
-
-
-
-const POSSIBLE_SKILLS = [
-  'React',
-  'TypeScript',
-  'JavaScript',
-  'Tailwind CSS',
-  'Node.js',
-  'Java',
-  'Spring Boot',
-  'Next.js',
-  'Redux',
-  'Maven',
-];
+import { technologies } from '../constants/technologies';
 
 const getRandomSkills = (id: number): string[] => {
   const count = (id % 3) + 2;
   const skills: string[] = [];
 
   for (let i = 0; i < count; i++) {
-    const index = (id + i * 3) % POSSIBLE_SKILLS.length;
-    const skill = POSSIBLE_SKILLS[index];
+    const index = (id + i * 3) % technologies.length;
+    const skill = technologies[index];
 
-    if (!skills.includes(skill)) {
+    if (skill && !skills.includes(skill)) {
       skills.push(skill);
     }
   }
@@ -38,6 +24,9 @@ const getDevLevel = (id: number): DevLevel => {
 };
 
 export const adaptUser = (rawUser: IRawUser): IUser => {
+  const level = getDevLevel(rawUser.id);
+  const title = rawUser.company?.title ?? 'Software Engineer';
+
   return {
     id: rawUser.id,
     firstName: rawUser.firstName,
@@ -46,12 +35,12 @@ export const adaptUser = (rawUser: IRawUser): IUser => {
     email: rawUser.email,
     phone: rawUser.phone,
     company: {
-      title: rawUser.company?.title ?? 'Software Engineer',
+      title,
       department: rawUser.company?.department ?? 'Engineering',
       name: rawUser.company?.name ?? 'Tech Corp',
     },
     skills: getRandomSkills(rawUser.id),
-    level: getDevLevel(rawUser.id),
-    bio: 'Frontend & Fullstack developer. Passionate about clean code, robust architectures, and great UI/UX.',
+    level,
+    bio: `${title} уровня ${level}.`,
   };
 };
