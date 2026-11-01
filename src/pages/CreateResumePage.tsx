@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { DevLevel, IUser } from '../types/user';
+import type { IUser } from '../types/user';
 import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
@@ -62,7 +62,7 @@ export const CreateResumePage = () => {
         name: data.companyName,
       },
       skills,
-      level: data.level as DevLevel,
+      level: data.level,
       bio: data.bio,
       location: data.location || undefined,
     };

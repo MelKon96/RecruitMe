@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { DEV_LEVELS } from '../constants/devLevels';
 
 export const resumeSchema = z.object({
   firstName: z.string().trim().min(1, 'Введите имя'),
   lastName: z.string().trim().min(1, 'Введите фамилию'),
   position: z.string().trim().min(1, 'Укажите желаемую должность'),
-  level: z.enum(['Junior', 'Middle', 'Senior', 'Lead']),
+  level: z.enum(DEV_LEVELS),
   email: z.email('Введите корректный email'),
   phone: z.string(),
   skills: z

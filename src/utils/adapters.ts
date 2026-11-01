@@ -1,5 +1,5 @@
-import type { IUser, DevLevel } from '../types/user';
-
+import type { IUser } from '../types/user';
+import { DEV_LEVELS, type DevLevel } from '../constants/devLevels';
 
 interface IRawDummyUser {
   id: number;
@@ -15,7 +15,6 @@ interface IRawDummyUser {
   };
 }
 
-
 const POSSIBLE_SKILLS = [
   'React',
   'TypeScript',
@@ -29,23 +28,24 @@ const POSSIBLE_SKILLS = [
   'Maven',
 ];
 
-const POSSIBLE_LEVELS: DevLevel[] = ['Junior', 'Middle', 'Senior', 'Lead'];
-
 const getRandomSkills = (id: number): string[] => {
   const count = (id % 3) + 2;
   const skills: string[] = [];
+
   for (let i = 0; i < count; i++) {
     const index = (id + i * 3) % POSSIBLE_SKILLS.length;
     const skill = POSSIBLE_SKILLS[index];
+
     if (!skills.includes(skill)) {
       skills.push(skill);
     }
   }
+
   return skills;
 };
 
 const getDevLevel = (id: number): DevLevel => {
-  return POSSIBLE_LEVELS[id % POSSIBLE_LEVELS.length];
+  return DEV_LEVELS[id % DEV_LEVELS.length];
 };
 
 export const adaptUser = (rawUser: IRawDummyUser): IUser => {
@@ -63,6 +63,6 @@ export const adaptUser = (rawUser: IRawDummyUser): IUser => {
     },
     skills: getRandomSkills(rawUser.id),
     level: getDevLevel(rawUser.id),
-    bio: `Frontend & Fullstack developer. Passionate about clean code, robust architectures, and great UI/UX.`,
+    bio: 'Frontend & Fullstack developer. Passionate about clean code, robust architectures, and great UI/UX.',
   };
 };

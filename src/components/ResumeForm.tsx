@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
-import type { DevLevel } from '../types/user';
+import { DEV_LEVELS } from '../constants/devLevels';
 import { SkillsInput } from './SkillsInput';
 import { ROUTES } from '../constants/paths';
 
@@ -13,8 +13,6 @@ interface ResumeFormProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   submitLabel?: string;
 }
-
-const levels: DevLevel[] = ['Junior', 'Middle', 'Senior', 'Lead'];
 
 const inputClassName =
   'w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100';
@@ -111,7 +109,7 @@ export const ResumeForm = ({
             Уровень специалиста
           </label>
           <select id="level" {...register('level')} className={inputClassName}>
-            {levels.map((level) => (
+            {DEV_LEVELS.map((level) => (
               <option key={level} value={level}>
                 {level}
               </option>

@@ -1,4 +1,4 @@
-export type DevLevel = 'Junior' | 'Middle' | 'Senior' | 'Lead';
+import type { DevLevel } from '../constants/devLevels';
 
 export interface IUser {
   id: number;
