@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
+
 import { fetchUsersPage, queryKeys } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
 import { ROUTES } from '../constants/paths';
@@ -11,9 +12,8 @@ export const UsersPage = () => {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const resume = useResume();
 
-  const [search, setSearch] = useState(
-    () => new URLSearchParams(window.location.search).get('search') ?? '',
-  );
+  const { search } = useSearch({ from: ROUTES.home });
+  const searchValue = search ?? '';
 
   const {
     data,
@@ -29,7 +29,6 @@ export const UsersPage = () => {
     getNextPageParam: (lastPage) => lastPage.nextSkip,
   });
 
-  // Наблюдатель за скроллом
   useEffect(() => {
     const currentRef = loadMoreRef.current;
     if (!currentRef) return;
@@ -45,10 +44,18 @@ export const UsersPage = () => {
 
     observer.observe(currentRef);
 
-    return () => {
-      if (currentRef) observer.unobserve(currentRef);
-    };
+    return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const handleSearchChange = (value: string) => {
+    const searchValue = value.trim();
+
+    navigate({
+      to: ROUTES.home,
+      search: searchValue ? { search: searchValue } : {},
+      replace: true,
+    });
+  };
 
   const users = data?.pages.flatMap((page) => page.users) ?? [];
 
@@ -56,7 +63,11 @@ export const UsersPage = () => {
     ? [...users.filter((user) => user.id !== resume.id), resume]
     : users;
 
-  const searchWords = search.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const searchWords = searchValue
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
 
   const filteredUsers = allUsers.filter((user) => {
     const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
@@ -106,8 +117,8 @@ export const UsersPage = () => {
         <input
           id="specialist-search"
           type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          value={searchValue}
+          onChange={(event) => handleSearchChange(event.target.value)}
           placeholder="Имя и технологии, например Next React James..."
           className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         />

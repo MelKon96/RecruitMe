@@ -95,7 +95,7 @@ export const MessagesPage = () => {
           </p>
 
           <button
-            onClick={() => navigate({ to: ROUTES.home })}
+            onClick={() => navigate({ to: ROUTES.home, search: { search: '' } })}
             className="mt-5 cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
           >
             Найти разработчика

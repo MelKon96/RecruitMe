@@ -3,39 +3,34 @@ import {
   createRoute,
   createRouter,
   lazyRouteComponent,
-  Outlet,
 } from '@tanstack/react-router';
 
 import { UsersPage } from '../pages/UsersPage';
 import { UserDetailPage } from '../pages/UserDetailPage';
 import { MyResumesPage } from '../pages/MyResumesPage';
-
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
-import { ScrollToTop } from '../components/ScrollToTop';
 import { MessagesPage } from '../pages/MessagesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
+
+import { RootLayout } from '../components/RootLayout';
 import { ROUTES } from '../constants/paths';
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <div className="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900">
-      <ScrollToTop />
-      <Header />
-
-      <div className="flex-1">
-        <Outlet />
-      </div>
-
-      <Footer />
-    </div>
-  ),
+  component: RootLayout,
   notFoundComponent: NotFoundPage,
 });
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.home,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { search?: string } => {
+    const value = search.search;
+
+    return typeof value === 'string' && value.length > 0
+      ? { search: value }
+      : {};
+  },
   component: UsersPage,
 });
 
@@ -63,6 +58,14 @@ const createResumeRoute = createRoute({
 const chatRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.chat,
+  validateSearch: (search: Record<string, unknown>) => ({
+    from:
+      search.from === 'user'
+        ? ('user' as const)
+        : search.from === 'messages'
+          ? ('messages' as const)
+          : undefined,
+  }),
   component: lazyRouteComponent(() => import('../pages/ChatPage'), 'ChatPage'),
 });
 

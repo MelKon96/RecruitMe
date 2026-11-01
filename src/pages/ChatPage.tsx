@@ -1,32 +1,26 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
+
 import { fetchUserById, queryKeys } from '../api/usersApi';
 import type { IUser } from '../types/user';
 import type { IMessage, IConversation } from '../types/conversation';
+
 import {
   getConversations,
   saveConversations,
 } from '../storage/conversationsStorage';
+
 import { ROUTES } from '../constants/paths';
 import { OWN_RESUME_ID } from '../constants/id';
 
 export const ChatPage = () => {
-  const { userId } = useParams({ from: '/chat/$userId' });
-
-  const search = useSearch({
-    from: '/chat/$userId',
-    shouldThrow: false,
-  }) as { from?: string };
-
+  const { userId } = useParams({ from: ROUTES.chat });
+  const { from } = useSearch({ from: ROUTES.chat });
   const navigate = useNavigate();
 
   const isOwnResume = Number(userId) === OWN_RESUME_ID;
   const isValidId = /^\d+$/.test(userId) && Number(userId) > 0;
-  const isValidFrom =
-    search.from === undefined ||
-    search.from === 'user' ||
-    search.from === 'messages';
 
   useEffect(() => {
     if (isOwnResume) {
@@ -45,7 +39,7 @@ export const ChatPage = () => {
   } = useQuery({
     queryKey: queryKeys.user(Number(userId)),
     queryFn: () => fetchUserById(Number(userId)),
-    enabled: isValidId && !isOwnResume && isValidFrom,
+    enabled: isValidId && !isOwnResume,
     retry: false,
   });
 
@@ -55,12 +49,6 @@ export const ChatPage = () => {
 
   if (!isValidId) {
     return <ChatError message="Указан некорректный ID пользователя." />;
-  }
-
-  if (!isValidFrom) {
-    return (
-      <ChatError message="Некорректный параметр URL. Проверьте ссылку на чат." />
-    );
   }
 
   if (isLoading) {
@@ -80,7 +68,9 @@ export const ChatPage = () => {
     return <ChatError message="Пользователь не найден." />;
   }
 
-  return <ChatConversation key={userId} userId={userId} user={user} />;
+  return (
+    <ChatConversation key={userId} userId={userId} user={user} from={from} />
+  );
 };
 
 interface IChatErrorProps {
@@ -89,49 +79,33 @@ interface IChatErrorProps {
 }
 
 const ChatError = ({ message, onRetry }: IChatErrorProps) => {
-  const navigate = useNavigate();
-
   return (
-    <section className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-      <h1 className="text-2xl font-bold text-gray-900">{message}</h1>
+    <div className="mx-auto max-w-3xl px-4 py-12 text-center">
+      <p className="text-gray-700">{message}</p>
 
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        {onRetry && (
-          <button
-            type="button"
-            onClick={onRetry}
-            className="cursor-pointer rounded-lg border border-gray-300 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
-          >
-            Повторить
-          </button>
-        )}
-
+      {onRetry && (
         <button
           type="button"
-          onClick={() => navigate({ to: ROUTES.home })}
-          className="cursor-pointer rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          onClick={onRetry}
+          className="mt-4 cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
         >
-          На главную
+          Повторить
         </button>
-      </div>
-    </section>
+      )}
+    </div>
   );
 };
 
 interface IChatConversationProps {
   userId: string;
   user: IUser;
+  from?: 'user' | 'messages';
 }
 
-const ChatConversation = ({ userId, user }: IChatConversationProps) => {
+const ChatConversation = ({ userId, user, from }: IChatConversationProps) => {
   const navigate = useNavigate();
 
-  const search = useSearch({
-    from: '/chat/$userId',
-    shouldThrow: false,
-  }) as { from?: string };
-
-  const fromMessages = search.from === 'messages';
+  const fromMessages = from === 'messages';
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<IMessage[]>(() => {
@@ -140,6 +114,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
     );
   });
   const [status, setStatus] = useState('Подключение...');
+
   const socketRef = useRef<WebSocket | null>(null);
   const messagesRef = useRef<IMessage[]>(messages);
 
@@ -233,7 +208,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
       return;
     }
 
-    if (search.from === 'user') {
+    if (from === 'user') {
       navigate({
         to: ROUTES.users,
         params: { id: userId },
@@ -241,7 +216,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
       return;
     }
 
-    navigate({ to: ROUTES.home });
+    navigate({ to: ROUTES.home});
   };
 
   return (
@@ -253,7 +228,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
       >
         {fromMessages
           ? '← Назад к сообщениям'
-          : search.from === 'user'
+          : from === 'user'
             ? '← Назад к пользователю'
             : '← На главную'}
       </button>
@@ -263,6 +238,7 @@ const ChatConversation = ({ userId, user }: IChatConversationProps) => {
           <h1 className="text-xl font-bold text-gray-900">
             Чат с {user.firstName} {user.lastName}
           </h1>
+
           <p className="mt-1 text-sm text-gray-500">Статус: {status}</p>
         </div>
 

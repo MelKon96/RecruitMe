@@ -22,7 +22,9 @@ export const UserDetailPage = () => {
   const user = isOwnResume ? ownResume : fetchedUser;
 
   const handleBack = () => {
-    navigate({ to: ROUTES.home });
+    navigate({
+      to: ROUTES.home,
+    });
   };
 
   if (isLoading && !isOwnResume) {
