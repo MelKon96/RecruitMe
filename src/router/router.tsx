@@ -15,6 +15,7 @@ import { Footer } from '../components/Footer';
 import { ScrollToTop } from '../components/ScrollToTop';
 import { MessagesPage } from '../pages/MessagesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
+import { ROUTES } from '../constants/paths';
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -34,25 +35,25 @@ const rootRoute = createRootRoute({
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: ROUTES.home,
   component: UsersPage,
 });
 
 const userDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/users/$id',
+  path: ROUTES.users,
   component: UserDetailPage,
 });
 
 const myResumesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/my-resumes',
+  path: ROUTES.myResumes,
   component: MyResumesPage,
 });
 
 const createResumeRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/create-resume',
+  path: ROUTES.createResume,
   component: lazyRouteComponent(
     () => import('../pages/CreateResumePage'),
     'CreateResumePage',
@@ -61,13 +62,13 @@ const createResumeRoute = createRoute({
 
 const chatRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/chat/$userId',
+  path: ROUTES.chat,
   component: lazyRouteComponent(() => import('../pages/ChatPage'), 'ChatPage'),
 });
 
 const messagesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/messages',
+  path: ROUTES.messages,
   component: MessagesPage,
 });
 
