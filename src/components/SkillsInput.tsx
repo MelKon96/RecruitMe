@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { technologies } from '../constants/technologies';
 
 interface SkillsInputProps {
@@ -14,6 +14,25 @@ export const SkillsInput = ({
 }: SkillsInputProps) => {
   const [skillInput, setSkillInput] = useState('');
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsSuggestionsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const normalizedInput = skillInput.trim().toLowerCase();
 
@@ -45,7 +64,7 @@ export const SkillsInput = ({
   };
 
   return (
-    <div>
+    <div ref={containerRef}>
       <label
         htmlFor="skillInput"
         className="mb-2 block text-sm font-medium text-gray-700"
@@ -79,9 +98,6 @@ export const SkillsInput = ({
             setIsSuggestionsOpen(true);
           }}
           onFocus={() => setIsSuggestionsOpen(true)}
-          onBlur={() => {
-            setTimeout(() => setIsSuggestionsOpen(false), 150);
-          }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault();
