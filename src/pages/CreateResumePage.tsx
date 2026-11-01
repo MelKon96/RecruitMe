@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,12 +13,11 @@ import { OWN_RESUME_ID } from '../constants/id';
 export const CreateResumePage = () => {
   const navigate = useNavigate();
   const savedResume = useResume();
-  const [skills, setSkills] = useState<string[]>(savedResume?.skills ?? []);
 
   const {
     register,
+    control,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<ResumeFormValues>({
     resolver: zodResolver(resumeSchema),
@@ -30,22 +28,13 @@ export const CreateResumePage = () => {
       level: savedResume?.level ?? 'Junior',
       email: savedResume?.email ?? '',
       phone: savedResume?.phone ?? '',
-      skills: savedResume?.skills.join(', ') ?? '',
+      skills: savedResume?.skills ?? [],
       bio: savedResume?.bio ?? '',
       companyName: savedResume?.company.name ?? '',
       department: savedResume?.company.department ?? '',
       location: savedResume?.location ?? '',
     },
   });
-
-  const handleSkillsChange = (updatedSkills: string[]) => {
-    setSkills(updatedSkills);
-
-    setValue('skills', updatedSkills.join(', '), {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  };
 
   const onSubmit = (data: ResumeFormValues) => {
     const resume: IUser = {
@@ -62,14 +51,13 @@ export const CreateResumePage = () => {
         department: data.department,
         name: data.companyName,
       },
-      skills,
+      skills: data.skills,
       level: data.level,
       bio: data.bio,
       location: data.location || undefined,
     };
 
     saveResume(resume);
-
     navigate({ to: ROUTES.myResumes });
   };
 
@@ -81,9 +69,8 @@ export const CreateResumePage = () => {
 
       <ResumeForm
         register={register}
+        control={control}
         errors={errors}
-        skills={skills}
-        onSkillsChange={handleSkillsChange}
         onSubmit={handleSubmit(onSubmit)}
         submitLabel={savedResume ? 'Сохранить изменения' : 'Создать резюме'}
       />

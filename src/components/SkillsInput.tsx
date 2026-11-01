@@ -1,19 +1,15 @@
 import { useState } from 'react';
-import type { UseFormRegister } from 'react-hook-form';
-import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { technologies } from '../constants/technologies';
 
 interface SkillsInputProps {
   skills: string[];
   onSkillsChange: (skills: string[]) => void;
-  register: UseFormRegister<ResumeFormValues>;
   error?: string;
 }
 
 export const SkillsInput = ({
   skills,
   onSkillsChange,
-  register,
   error,
 }: SkillsInputProps) => {
   const [skillInput, setSkillInput] = useState('');
@@ -68,7 +64,7 @@ export const SkillsInput = ({
               type="button"
               onClick={() => removeSkill(skill)}
               aria-label={`Удалить ${skill}`}
-              className="ml-1 rounded-full hover:text-red-600 cursor-pointer"
+              className="ml-1 cursor-pointer rounded-full hover:text-red-600"
             >
               ×
             </button>
@@ -123,7 +119,7 @@ export const SkillsInput = ({
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => addSkill(technology)}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 hover:cursor-pointer"
               >
                 {technology}
               </button>
@@ -144,8 +140,6 @@ export const SkillsInput = ({
           )}
         </ul>
       )}
-
-      <input type="hidden" {...register('skills')} />
 
       <p className="mt-2 text-xs text-gray-500">
         Выберите технологию из подсказок или введите собственную. Нажмите Enter,

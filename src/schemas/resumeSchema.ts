@@ -8,14 +8,7 @@ export const resumeSchema = z.object({
   level: z.enum(DEV_LEVELS),
   email: z.email('Введите корректный email'),
   phone: z.string(),
-  skills: z
-    .string()
-    .trim()
-    .min(1, 'Укажите хотя бы один навык')
-    .refine(
-      (value) => value.split(',').some((skill) => skill.trim().length > 0),
-      'Укажите хотя бы один навык',
-    ),
+  skills: z.array(z.string()).min(1, 'Укажите хотя бы один навык'),
   bio: z.string().trim().min(1, 'Расскажите о себе'),
   companyName: z.string(),
   department: z.string(),

@@ -1,5 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import type { FieldErrors, UseFormRegister } from 'react-hook-form';
+import {
+  Controller,
+  type Control,
+  type FieldErrors,
+  type UseFormRegister,
+} from 'react-hook-form';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { DEV_LEVELS } from '../constants/devLevels';
 import { SkillsInput } from './SkillsInput';
@@ -7,9 +12,8 @@ import { ROUTES } from '../constants/paths';
 
 interface ResumeFormProps {
   register: UseFormRegister<ResumeFormValues>;
+  control: Control<ResumeFormValues>;
   errors: FieldErrors<ResumeFormValues>;
-  skills: string[];
-  onSkillsChange: (skills: string[]) => void;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   submitLabel?: string;
 }
@@ -21,9 +25,8 @@ const errorClassName = 'mt-1 text-sm text-red-600';
 
 export const ResumeForm = ({
   register,
+  control,
   errors,
-  skills,
-  onSkillsChange,
   onSubmit,
   submitLabel = 'Создать резюме',
 }: ResumeFormProps) => {
@@ -157,11 +160,16 @@ export const ResumeForm = ({
           </div>
         </div>
 
-        <SkillsInput
-          skills={skills}
-          onSkillsChange={onSkillsChange}
-          register={register}
-          error={errors.skills?.message}
+        <Controller
+          name="skills"
+          control={control}
+          render={({ field, fieldState }) => (
+            <SkillsInput
+              skills={field.value}
+              onSkillsChange={field.onChange}
+              error={fieldState.error?.message}
+            />
+          )}
         />
 
         <div>
