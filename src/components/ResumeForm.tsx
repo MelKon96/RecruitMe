@@ -1,14 +1,14 @@
-import { Link } from '@tanstack/react-router';
 import {
   Controller,
   type Control,
   type FieldErrors,
   type UseFormRegister,
 } from 'react-hook-form';
+
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { DEV_LEVELS } from '../constants/devLevels';
 import { SkillsInput } from './SkillsInput';
-import { ROUTES } from '../constants/paths';
+import { Field } from './Field';
 
 interface ResumeFormProps {
   register: UseFormRegister<ResumeFormValues>;
@@ -21,8 +21,6 @@ interface ResumeFormProps {
 const inputClassName =
   'w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100';
 
-const errorClassName = 'mt-1 text-sm text-red-600';
-
 export const ResumeForm = ({
   register,
   control,
@@ -31,230 +29,152 @@ export const ResumeForm = ({
   submitLabel = 'Создать резюме',
 }: ResumeFormProps) => {
   return (
-    <section className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <Link
-        to={ROUTES.myResumes}
-        className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-      >
-        ← Назад к моим резюме
-      </Link>
-
-      <p className="mt-2 text-gray-600">
-        Расскажите о себе и своих профессиональных навыках.
-      </p>
-
-      <form
-        onSubmit={onSubmit}
-        noValidate
-        className="mt-8 space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-      >
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="firstName"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Имя
-            </label>
-            <input
-              id="firstName"
-              {...register('firstName')}
-              className={inputClassName}
-              placeholder="Иван"
-            />
-            {errors.firstName && (
-              <p className={errorClassName}>{errors.firstName.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="lastName"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Фамилия
-            </label>
-            <input
-              id="lastName"
-              {...register('lastName')}
-              className={inputClassName}
-              placeholder="Иванов"
-            />
-            {errors.lastName && (
-              <p className={errorClassName}>{errors.lastName.message}</p>
-            )}
-          </div>
-        </div>
-
-        <div>
-          <label
-            htmlFor="position"
-            className="mb-2 block text-sm font-medium text-gray-700"
-          >
-            Желаемая должность
-          </label>
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      className="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+    >
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field
+          label="Имя"
+          htmlFor="firstName"
+          error={errors.firstName?.message}
+        >
           <input
-            id="position"
-            {...register('position')}
+            id="firstName"
+            {...register('firstName')}
             className={inputClassName}
-            placeholder="Frontend-разработчик"
+            placeholder="Иван"
           />
-          {errors.position && (
-            <p className={errorClassName}>{errors.position.message}</p>
-          )}
-        </div>
+        </Field>
 
-        <div>
-          <label
-            htmlFor="level"
-            className="mb-2 block text-sm font-medium text-gray-700"
-          >
-            Уровень специалиста
-          </label>
-          <select id="level" {...register('level')} className={inputClassName}>
-            {DEV_LEVELS.map((level) => (
-              <option key={level} value={level}>
-                {level}
-              </option>
-            ))}
-          </select>
-          {errors.level && (
-            <p className={errorClassName}>{errors.level.message}</p>
-          )}
-        </div>
+        <Field
+          label="Фамилия"
+          htmlFor="lastName"
+          error={errors.lastName?.message}
+        >
+          <input
+            id="lastName"
+            {...register('lastName')}
+            className={inputClassName}
+            placeholder="Иванов"
+          />
+        </Field>
+      </div>
 
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register('email')}
-              className={inputClassName}
-              placeholder="ivan@example.com"
-            />
-            {errors.email && (
-              <p className={errorClassName}>{errors.email.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="phone"
-              className="mb-2 block text-sm font-medium text-gray-700"
-            >
-              Телефон
-            </label>
-            <input
-              id="phone"
-              type="tel"
-              {...register('phone')}
-              className={inputClassName}
-              placeholder="+7 900 123-45-67"
-            />
-            {errors.phone && (
-              <p className={errorClassName}>{errors.phone.message}</p>
-            )}
-          </div>
-        </div>
-
-        <Controller
-          name="skills"
-          control={control}
-          render={({ field, fieldState }) => (
-            <SkillsInput
-              skills={field.value}
-              onSkillsChange={field.onChange}
-              error={fieldState.error?.message}
-            />
-          )}
+      <Field
+        label="Желаемая должность"
+        htmlFor="position"
+        error={errors.position?.message}
+      >
+        <input
+          id="position"
+          {...register('position')}
+          className={inputClassName}
+          placeholder="Frontend-разработчик"
         />
+      </Field>
 
-        <div>
-          <label
-            htmlFor="bio"
-            className="mb-2 block text-sm font-medium text-gray-700"
-          >
-            О себе
-          </label>
+      <Field
+        label="Уровень специалиста"
+        htmlFor="level"
+        error={errors.level?.message}
+      >
+        <select id="level" {...register('level')} className={inputClassName}>
+          {DEV_LEVELS.map((level) => (
+            <option key={level} value={level}>
+              {level}
+            </option>
+          ))}
+        </select>
+      </Field>
 
-          <textarea
-            id="bio"
-            rows={5}
-            {...register('bio')}
-            className={`${inputClassName} resize-none`}
-            placeholder="Расскажите о своём опыте и профессиональных целях"
-          />
-
-          {errors.bio && <p className={errorClassName}>{errors.bio.message}</p>}
-        </div>
-
-        <div className="border-t border-gray-200 pt-6">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Опыт работы и местоположение
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">Эти поля необязательны.</p>
-        </div>
-
-        <div>
-          <label
-            htmlFor="companyName"
-            className="mb-2 block text-sm font-medium text-gray-700"
-          >
-            Компания
-          </label>
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field label="Email" htmlFor="email" error={errors.email?.message}>
           <input
-            id="companyName"
-            {...register('companyName')}
+            id="email"
+            type="email"
+            {...register('email')}
             className={inputClassName}
-            placeholder="Название компании"
+            placeholder="ivan@example.com"
           />
-        </div>
+        </Field>
 
-        <div>
-          <label
-            htmlFor="department"
-            className="mb-2 block text-sm font-medium text-gray-700"
-          >
-            Отдел или описание опыта
-          </label>
+        <Field label="Телефон" htmlFor="phone" error={errors.phone?.message}>
           <input
-            id="department"
-            {...register('department')}
+            id="phone"
+            type="tel"
+            {...register('phone')}
             className={inputClassName}
-            placeholder="Frontend-разработка, 3 года опыта"
+            placeholder="+7 900 123-45-67"
           />
-        </div>
+        </Field>
+      </div>
 
-        <div>
-          <label
-            htmlFor="location"
-            className="mb-2 block text-sm font-medium text-gray-700"
-          >
-            Местоположение
-          </label>
-          <input
-            id="location"
-            {...register('location')}
-            className={inputClassName}
-            placeholder="Москва или удалённо"
+      <Controller
+        name="skills"
+        control={control}
+        render={({ field, fieldState }) => (
+          <SkillsInput
+            skills={field.value}
+            onSkillsChange={field.onChange}
+            error={fieldState.error?.message}
           />
-        </div>
+        )}
+      />
 
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="cursor-pointer rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
-          >
-            {submitLabel}
-          </button>
-        </div>
-      </form>
-    </section>
+      <Field label="О себе" htmlFor="bio" error={errors.bio?.message}>
+        <textarea
+          id="bio"
+          rows={5}
+          {...register('bio')}
+          className={`${inputClassName} resize-none`}
+          placeholder="Расскажите о своём опыте и профессиональных целях"
+        />
+      </Field>
+
+      <div className="border-t border-gray-200 pt-6">
+        <h2 className="text-lg font-semibold text-gray-900">
+          Опыт работы и местоположение
+        </h2>
+        <p className="mt-1 text-sm text-gray-500">Эти поля необязательны.</p>
+      </div>
+
+      <Field label="Компания" htmlFor="companyName">
+        <input
+          id="companyName"
+          {...register('companyName')}
+          className={inputClassName}
+          placeholder="Название компании"
+        />
+      </Field>
+
+      <Field label="Отдел или описание опыта" htmlFor="department">
+        <input
+          id="department"
+          {...register('department')}
+          className={inputClassName}
+          placeholder="Frontend-разработка, 3 года опыта"
+        />
+      </Field>
+
+      <Field label="Местоположение" htmlFor="location">
+        <input
+          id="location"
+          {...register('location')}
+          className={inputClassName}
+          placeholder="Москва или удалённо"
+        />
+      </Field>
+
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="cursor-pointer rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+        >
+          {submitLabel}
+        </button>
+      </div>
+    </form>
   );
 };

@@ -1,6 +1,7 @@
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+
 import type { IUser } from '../types/user';
 import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
@@ -63,9 +64,20 @@ export const CreateResumePage = () => {
 
   return (
     <section className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold text-gray-900">
+      <Link
+        to={ROUTES.myResumes}
+        className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+      >
+        ← Назад к моим резюме
+      </Link>
+
+      <h1 className="mt-4 mb-2 text-2xl font-bold text-gray-900">
         {savedResume ? 'Редактировать резюме' : 'Создать резюме'}
       </h1>
+
+      <p className="mb-8 text-gray-600">
+        Расскажите о себе и своих профессиональных навыках.
+      </p>
 
       <ResumeForm
         register={register}
