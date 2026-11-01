@@ -10,6 +10,26 @@ import { useResume } from '../hooks/useResume';
 import { saveResume } from '../storage/resumeStorage';
 import { OWN_RESUME_ID } from '../constants/id';
 
+const toResume = (data: ResumeFormValues): IUser => ({
+  id: OWN_RESUME_ID,
+  firstName: data.firstName,
+  lastName: data.lastName,
+  image: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    `${data.firstName} ${data.lastName}`,
+  )}&background=4f46e5&color=fff&size=128`,
+  email: data.email,
+  phone: data.phone,
+  company: {
+    title: data.position,
+    department: data.department,
+    name: data.companyName,
+  },
+  skills: data.skills,
+  level: data.level,
+  bio: data.bio,
+  location: data.location || undefined,
+});
+
 export const CreateResumePage = () => {
   const navigate = useNavigate();
   const savedResume = useResume();
@@ -37,27 +57,7 @@ export const CreateResumePage = () => {
   });
 
   const onSubmit = (data: ResumeFormValues) => {
-    const resume: IUser = {
-      id: OWN_RESUME_ID,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      image: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-        `${data.firstName} ${data.lastName}`,
-      )}&background=4f46e5&color=fff&size=128`,
-      email: data.email,
-      phone: data.phone,
-      company: {
-        title: data.position,
-        department: data.department,
-        name: data.companyName,
-      },
-      skills: data.skills,
-      level: data.level,
-      bio: data.bio,
-      location: data.location || undefined,
-    };
-
-    saveResume(resume);
+    saveResume(toResume(data));
     navigate({ to: ROUTES.myResumes });
   };
 
