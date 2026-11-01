@@ -1,19 +1,8 @@
 import type { IUser } from '../types/user';
 import { DEV_LEVELS, type DevLevel } from '../constants/devLevels';
+import type { IRawUser } from '../types/rawUser';
 
-interface IRawDummyUser {
-  id: number;
-  firstName: string;
-  lastName: string;
-  image: string;
-  email: string;
-  phone: string;
-  company?: {
-    title?: string;
-    department?: string;
-    name?: string;
-  };
-}
+
 
 const POSSIBLE_SKILLS = [
   'React',
@@ -48,7 +37,7 @@ const getDevLevel = (id: number): DevLevel => {
   return DEV_LEVELS[id % DEV_LEVELS.length];
 };
 
-export const adaptUser = (rawUser: IRawDummyUser): IUser => {
+export const adaptUser = (rawUser: IRawUser): IUser => {
   return {
     id: rawUser.id,
     firstName: rawUser.firstName,

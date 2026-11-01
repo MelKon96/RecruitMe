@@ -1,19 +1,6 @@
 import type { IUser } from '../types/user';
 import { adaptUser } from '../utils/adapters';
-
-interface IRawUser {
-  id: number;
-  firstName: string;
-  lastName: string;
-  image: string;
-  email: string;
-  phone: string;
-  company?: {
-    title?: string;
-    department?: string;
-    name?: string;
-  };
-}
+import type { IRawUser } from '../types/rawUser';
 
 interface IRawUsersResponse {
   users: IRawUser[];
@@ -27,10 +14,16 @@ export const fetchUsers = async ({
   signal,
   limit = 10,
   skip = 0,
-}: { signal?: AbortSignal; limit?: number; skip?: number } = {}): Promise<{ users: IUser[]; total: number }> => {
-  const response = await fetch(`https://dummyjson.com/users?limit=${limit}&skip=${skip}`, {
-    signal,
-  });
+}: { signal?: AbortSignal; limit?: number; skip?: number } = {}): Promise<{
+  users: IUser[];
+  total: number;
+}> => {
+  const response = await fetch(
+    `https://dummyjson.com/users?limit=${limit}&skip=${skip}`,
+    {
+      signal,
+    },
+  );
 
   if (!response.ok) {
     throw new Error('Не удалось загрузить пользователей');
@@ -43,7 +36,6 @@ export const fetchUsers = async ({
     total: data.total,
   };
 };
-
 
 export const fetchUsersPage = async ({
   pageParam = 0,
