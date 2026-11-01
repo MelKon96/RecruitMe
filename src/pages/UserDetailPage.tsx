@@ -2,25 +2,14 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { fetchUserById } from '../api/usersApi';
 import { UserDetailCard } from '../components/UserDetailCard';
-import type { IUser } from '../types/user';
+import { useResume } from '../hooks/useResume';
 import { ROUTES } from '../constants/paths';
-
-const RESUME_STORAGE_KEY = 'recruit_me_resume';
 
 export const UserDetailPage = () => {
   const { id } = useParams({ from: '/users/$id' });
   const navigate = useNavigate();
   const numericId = Number(id);
-
-  let ownResume: IUser | null = null;
-  const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-  if (savedResume) {
-    try {
-      ownResume = JSON.parse(savedResume) as IUser;
-    } catch {
-      ownResume = null;
-    }
-  }
+  const ownResume = useResume();
 
   const isOwnResume = ownResume !== null && ownResume.id === numericId;
 

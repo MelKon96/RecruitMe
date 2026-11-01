@@ -3,52 +3,17 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { fetchUsersPage } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
-import type { IUser } from '../types/user';
 import { ROUTES } from '../constants/paths';
-
-const RESUME_STORAGE_KEY = 'recruit_me_resume';
-const RESUME_UPDATED_EVENT = 'resume-updated';
+import { useResume } from '../hooks/useResume';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const resume = useResume();
 
   const [search, setSearch] = useState(
     () => new URLSearchParams(window.location.search).get('search') ?? '',
   );
-
-  const [resume, setResume] = useState<IUser | null>(() => {
-    const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-    if (!savedResume) return null;
-    try {
-      return JSON.parse(savedResume) as IUser;
-    } catch {
-      return null;
-    }
-  });
-
-  useEffect(() => {
-    const updateResume = () => {
-      const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-      if (!savedResume) {
-        setResume(null);
-        return;
-      }
-      try {
-        setResume(JSON.parse(savedResume) as IUser);
-      } catch {
-        setResume(null);
-      }
-    };
-
-    window.addEventListener(RESUME_UPDATED_EVENT, updateResume);
-    window.addEventListener('storage', updateResume);
-
-    return () => {
-      window.removeEventListener(RESUME_UPDATED_EVENT, updateResume);
-      window.removeEventListener('storage', updateResume);
-    };
-  }, []);
 
   const {
     data,

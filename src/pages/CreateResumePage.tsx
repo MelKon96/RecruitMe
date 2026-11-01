@@ -7,21 +7,12 @@ import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
 import { ROUTES } from '../constants/paths';
-
-const RESUME_STORAGE_KEY = 'recruit_me_resume';
-
-const getSavedResume = (): IUser | null => {
-  try {
-    const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-    return savedResume ? (JSON.parse(savedResume) as IUser) : null;
-  } catch {
-    return null;
-  }
-};
+import { useResume } from '../hooks/useResume';
+import { saveResume } from '../storage/resumeStorage';
 
 export const CreateResumePage = () => {
   const navigate = useNavigate();
-  const [savedResume] = useState<IUser | null>(getSavedResume);
+  const savedResume = useResume();
   const [skills, setSkills] = useState<string[]>(savedResume?.skills ?? []);
 
   const {
@@ -76,8 +67,7 @@ export const CreateResumePage = () => {
       location: data.location || undefined,
     };
 
-    localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(resume));
-    window.dispatchEvent(new Event('resume-updated'));
+    saveResume(resume);
 
     navigate({ to: ROUTES.myResumes });
   };

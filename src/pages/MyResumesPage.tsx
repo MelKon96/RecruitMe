@@ -1,28 +1,14 @@
-import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import type { IUser } from '../types/user';
 import { Pencil, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
-
-const RESUME_STORAGE_KEY = 'recruit_me_resume';
+import { useResume } from '../hooks/useResume';
+import { removeResume } from '../storage/resumeStorage';
 
 export const MyResumesPage = () => {
-  const [resume, setResume] = useState<IUser | null>(() => {
-    const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-
-    if (!savedResume) return null;
-
-    try {
-      return JSON.parse(savedResume) as IUser;
-    } catch {
-      return null;
-    }
-  });
+  const resume = useResume();
 
   const handleDelete = () => {
-    localStorage.removeItem(RESUME_STORAGE_KEY);
-    window.dispatchEvent(new Event('resume-updated'));
-    setResume(null);
+    removeResume();
   };
 
   return (
