@@ -9,6 +9,7 @@ import { ResumeForm } from '../components/ResumeForm';
 import { ROUTES } from '../constants/paths';
 import { useResume } from '../hooks/useResume';
 import { saveResume } from '../storage/resumeStorage';
+import { OWN_RESUME_ID } from '../constants/id';
 
 export const CreateResumePage = () => {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export const CreateResumePage = () => {
 
   const onSubmit = (data: ResumeFormValues) => {
     const resume: IUser = {
-      id: -1,
+      id: OWN_RESUME_ID,
       firstName: data.firstName,
       lastName: data.lastName,
       image: `https://ui-avatars.com/api/?name=${encodeURIComponent(

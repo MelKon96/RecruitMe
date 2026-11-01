@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
 import { ROUTES } from '../constants/paths';
+import { OWN_RESUME_ID } from '../constants/id';
 
 interface IUserDetailCardProps {
   user: IUser;
@@ -107,7 +108,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
             )}
           </div>
 
-          {user.id !== -1 && (
+          {user.id !== OWN_RESUME_ID && (
             <button
               type="button"
               onClick={() =>

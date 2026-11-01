@@ -9,6 +9,7 @@ import {
   saveConversations,
 } from '../storage/conversationsStorage';
 import { ROUTES } from '../constants/paths';
+import { OWN_RESUME_ID } from '../constants/id';
 
 export const ChatPage = () => {
   const { userId } = useParams({ from: '/chat/$userId' });
@@ -20,6 +21,7 @@ export const ChatPage = () => {
 
   const navigate = useNavigate();
 
+  const isOwnResume = Number(userId) === OWN_RESUME_ID;
   const isValidId = /^\d+$/.test(userId) && Number(userId) > 0;
   const isValidFrom =
     search.from === undefined ||
@@ -27,14 +29,13 @@ export const ChatPage = () => {
     search.from === 'messages';
 
   useEffect(() => {
-    if (userId === '-1') {
+    if (isOwnResume) {
       navigate({
-        to: ROUTES.users,
-        params: { id: '-1' },
+        to: ROUTES.home,
         replace: true,
       });
     }
-  }, [userId, navigate]);
+  }, [isOwnResume, navigate]);
 
   const {
     data: user,
@@ -44,11 +45,11 @@ export const ChatPage = () => {
   } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => fetchUserById(Number(userId)),
-    enabled: isValidId && userId !== '-1' && isValidFrom,
+    enabled: isValidId && !isOwnResume && isValidFrom,
     retry: false,
   });
 
-  if (userId === '-1') {
+  if (isOwnResume) {
     return null;
   }
 
