@@ -18,9 +18,3 @@ export interface IUser {
   location?: string;
 }
 
-// Параметры фильтрации для поиска
-export interface IFilterParams {
-  search: string;
-  skills: string[];
-  level: DevLevel | '';
-}
