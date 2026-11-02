@@ -1,9 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
-import type { IUser } from '../types/user';
-import { ROUTES } from '../constants/paths';
-import { OWN_RESUME_ID } from '../constants/id';
-import { LEVEL_COLORS } from '../constants/levelColors';
-import { UserProfileDetails } from './UserProfileDetails';
+import { useNavigate } from "@tanstack/react-router";
+import type { IUser } from "../types/user";
+import { ROUTES } from "../constants/paths";
+import { OWN_RESUME_ID } from "../constants/id";
+import { LEVEL_COLORS } from "../constants/levelColors";
+import { UserProfileDetails } from "./UserProfileDetails";
 
 interface IUserDetailCardProps {
   user: IUser;
@@ -54,6 +54,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
               {user.company.title}
             </p>
 
+            {/* Здесь можно не рисовать строку, если название и отдел пустые. Форма резюме это разрешает, и на экране остаётся один разделитель. */}
             <p className="text-sm text-gray-400">
               {user.company.name} • {user.company.department}
             </p>
@@ -64,13 +65,14 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
 
         {user.id !== OWN_RESUME_ID && (
           <div className="flex justify-end pt-6">
+            {/* Здесь можно добавить aria-label={`Написать ${user.firstName} ${user.lastName}`}: у кнопки останется текст «Написать», а скринридер назовёт адресата. */}
             <button
               type="button"
               onClick={() =>
                 navigate({
                   to: ROUTES.chat,
                   params: { userId: String(user.id) },
-                  search: { from: 'user' },
+                  search: { from: "user" },
                 })
               }
               className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white transition hover:bg-indigo-700"

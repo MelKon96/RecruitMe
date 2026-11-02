@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
-import { useQueries } from '@tanstack/react-query';
-import { MessageCircle, Trash2 } from 'lucide-react';
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
+import { useQueries } from "@tanstack/react-query";
+import { MessageCircle, Trash2 } from "lucide-react";
 
-import { fetchUserById, queryKeys } from '../api/usersApi';
-import { ROUTES } from '../constants/paths';
-import type { IConversation } from '../types/conversation';
+import { fetchUserById, queryKeys } from "../api/usersApi";
+import { ROUTES } from "../constants/paths";
+import type { IConversation } from "../types/conversation";
 import {
   getConversations,
   removeConversation,
-} from '../storage/conversationsStorage';
-import { OWN_RESUME_ID } from '../constants/id';
+} from "../storage/conversationsStorage";
+import { OWN_RESUME_ID } from "../constants/id";
 
 export const MessagesPage = () => {
   const navigate = useNavigate();
@@ -23,8 +23,8 @@ export const MessagesPage = () => {
   const userIds = [
     ...new Set(
       conversations
-        .map(({ userId }) => userId)
-        .filter((userId) => {
+        // .map(({ userId }) => userId) а вот так работать будет? Перечекай, я заменил(.filter(( userId ) => .filter(({ userId })) )
+        .filter(({ userId }) => {
           const id = Number(userId);
 
           return Number.isInteger(id) && id > 0 && id !== OWN_RESUME_ID;
@@ -49,8 +49,9 @@ export const MessagesPage = () => {
     query.data ? [query.data] : [],
   );
 
-  const usersById = new Map(users.map((user) => [String(user.id), user]));
+  const usersById = new Map(users.map((user) => [String(user.id), user])); // а зачем Map?
 
+  // Здесь можно не прятать весь список, пока не ответит самый медленный запрос, и не выбрасывать диалог при ошибке одного fetchUserById. hasError ниже срабатывает только если упали все запросы, одиночная ошибка просто убирает переписку без текста.
   const isLoading = userQueries.some((query) => query.isLoading);
 
   const hasError =
@@ -120,11 +121,12 @@ export const MessagesPage = () => {
                     navigate({
                       to: ROUTES.chat,
                       params: { userId: conversation.userId },
-                      search: { from: 'messages' },
+                      search: { from: "messages" },
                     })
                   }
                   className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left sm:gap-4"
                 >
+                  {/* Здесь можно поставить alt="": имя уже написано в кнопке рядом, подпись фото его дублирует. */}
                   <img
                     src={user.image}
                     alt={`${user.firstName} ${user.lastName}`}
@@ -137,7 +139,7 @@ export const MessagesPage = () => {
                     </p>
 
                     <p className="mt-1 truncate text-sm text-gray-500">
-                      {conversation.lastMessage || 'Открыть переписку'}
+                      {conversation.lastMessage || "Открыть переписку"}
                     </p>
                   </div>
 
@@ -149,6 +151,7 @@ export const MessagesPage = () => {
 
                 {deletingUserId === conversation.userId ? (
                   <div className="flex w-full gap-2 pl-[52px] sm:w-auto sm:pl-0">
+                    {/* Здесь можно добавить aria-label={`Удалить переписку с ${user.firstName} ${user.lastName}`}: текст «Удалить» не говорит, какой диалог пропадёт. */}
                     <button
                       type="button"
                       onClick={() => handleDelete(conversation.userId)}

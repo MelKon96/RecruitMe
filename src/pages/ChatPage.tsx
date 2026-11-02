@@ -32,6 +32,7 @@ export const ChatPage = () => {
     isError,
     refetch,
   } = useQuery({
+    // Здесь можно собирать queryKey только для isValidId. Для «abc» ключ становится ['user', NaN], хотя запрос и выключен через enabled.
     queryKey: queryKeys.user(Number(userId)),
     queryFn: ({ signal }) => fetchUserById(Number(userId), { signal }),
     enabled: isValidId && !isOwnResume,

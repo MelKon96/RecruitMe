@@ -25,6 +25,7 @@ export const Header = () => {
           onClick={closeMenu}
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-gray-900"
         >
+          {/* Здесь можно поставить aria-hidden="true" на этот span: ссылка и так читается как «RecruitMe», буква R добавляет лишнее имя. */}
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
             R
           </span>
@@ -34,6 +35,7 @@ export const Header = () => {
           </span>
         </Link>
 
+        {/* Здесь можно на активную ссылку добавить aria-current="page". Сейчас текущий раздел отличается только цветом. То же самое — у мобильного nav ниже. */}
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_ITEMS.map((item) => (
             <Link

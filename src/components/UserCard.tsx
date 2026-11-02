@@ -1,5 +1,5 @@
-import type { IUser } from '../types/user';
-import { LEVEL_COLORS } from '../constants/levelColors';
+import type { IUser } from "../types/user";
+import { LEVEL_COLORS } from "../constants/levelColors";
 
 interface IUserCardProps {
   user: IUser;

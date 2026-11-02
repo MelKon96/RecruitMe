@@ -7,9 +7,11 @@ export const resumeSchema = z.object({
   position: z.string().trim().min(1, 'Укажите желаемую должность'),
   level: z.enum(DEV_LEVELS),
   email: z.email('Введите корректный email'),
+  // Здесь можно проверить формат номера, а не только непустую строку: сейчас проходит «1».
   phone: z.string().trim().min(1, 'Введите номер телефона'),
   skills: z.array(z.string()).min(1, 'Укажите хотя бы один навык'),
   bio: z.string().trim().min(1, 'Расскажите о себе'),
+  // Здесь можно добавить trim() к companyName, department и location. Пробелы сохраняются и потом попадают в карточку.
   companyName: z.string(),
   department: z.string(),
   location: z.string(),

@@ -1,3 +1,4 @@
+// Здесь можно убрать лишние два пробела в начале каждой строки: файл целиком сдвинут вправо.
   import { useRef } from 'react';
   import { useInfiniteQuery } from '@tanstack/react-query';
   import { useNavigate, useSearch } from '@tanstack/react-router';
@@ -37,6 +38,7 @@
       fetchNextPage,
     });
 
+    // Здесь можно не обрезать строку на каждый символ и не писать её сразу в URL. Input контролируется уже обрезанным search, поэтому пробел между словами стирается и второй запрос («James React») набрать нельзя. trim уже делает filterUsers.
     const handleSearchChange = (value: string) => {
       const searchValue = value.trim();
 
@@ -56,6 +58,7 @@
     const filteredUsers = filterUsers(allUsers, searchValue);
 
     if (isLoading) {
+      // Здесь можно добавить role="status", чтобы появление текста загрузки объявилось. То же самое — у блока ошибки ниже и у фразы «Специалисты по вашему запросу не найдены».
       return (
         <div className="flex min-h-screen items-center justify-center text-gray-500">
           Загрузка базы кандидатов...
@@ -100,6 +103,7 @@
           />
         </div>
 
+        {/* Здесь можно не прятать блок с ref, когда список пустой, и не фильтровать только уже загруженные страницы. Если на первой десятке никого нет, sentinel не монтируется и следующие страницы не запрашиваются. Поиск лучше отдать в API либо догружать страницы, пока есть nextSkip. */}
         {filteredUsers.length > 0 ? (
           <>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

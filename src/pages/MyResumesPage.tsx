@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { FileText, Pencil, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
 import { useResume } from '../hooks/useResume';
+// Связано с storage/resumeStorage.ts: removeResume брать из ResumeProvider. Сейчас карточка исчезает только потому, что storage шлёт событие resume-updated.
 import { removeResume } from '../storage/resumeStorage';
 import { UserProfileDetails } from '../components/UserProfileDetails';
 
@@ -52,6 +53,7 @@ export const MyResumesPage = () => {
         <article className="mt-8 max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-4">
+              {/* Здесь можно поставить alt="": имя уже есть в заголовке рядом. */}
               <img
                 src={resume.image}
                 alt={`${resume.firstName} ${resume.lastName}`}
@@ -65,6 +67,7 @@ export const MyResumesPage = () => {
 
                 <p className="mt-1 text-gray-600">{resume.company.title}</p>
 
+                {/* Здесь можно взять класс из LEVEL_COLORS, как на карточке в каталоге и в профиле. Сейчас бейдж всегда индиго и не зависит от уровня. */}
                 <span className="mt-2 inline-block rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
                   {resume.level}
                 </span>

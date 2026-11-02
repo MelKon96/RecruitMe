@@ -6,6 +6,7 @@ import { useResume } from '../hooks/useResume';
 import { ROUTES } from '../constants/paths';
 
 export const UserDetailPage = () => {
+  // Здесь можно взять путь из ROUTES.users и отдельно обработать isError. Сейчас сбой сети и пустой ответ выглядят одинаково: «Кандидат не найден».
   const { id } = useParams({ from: '/users/$id' });
   const navigate = useNavigate();
   const numericId = Number(id);
@@ -21,6 +22,7 @@ export const UserDetailPage = () => {
 
   const user = isOwnResume ? ownResume : fetchedUser;
 
+  // Здесь можно вернуться через history.back(). Переход на ROUTES.home заново открывает каталог и сбрасывает ?search=, из которого пришли.
   const handleBack = () => {
     navigate({
       to: ROUTES.home,

@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { IMessage, IConversation } from '../types/conversation';
+import type { IMessage, IConversation } from "../types/conversation";
 import {
   getConversations,
   saveConversations,
-} from '../storage/conversationsStorage';
+} from "../storage/conversationsStorage";
 
 export const useChatSocket = (userId: string) => {
   const [messages, setMessages] = useState<IMessage[]>(() => {
@@ -13,7 +13,8 @@ export const useChatSocket = (userId: string) => {
     );
   });
 
-  const [status, setStatus] = useState('Подключение...');
+  // Здесь можно хранить статус как 'connecting' | 'open' | 'error' | 'closed', а русские подписи оставить в разметке. Кнопка «Отправить» сейчас включается только при точной строке «Подключено».
+  const [status, setStatus] = useState("Подключение...");
 
   const socketRef = useRef<WebSocket | null>(null);
   const messagesRef = useRef<IMessage[]>(messages);
@@ -49,32 +50,33 @@ export const useChatSocket = (userId: string) => {
   useEffect(() => {
     const conversations = getConversations();
 
+    // Здесь можно не записывать пустую переписку { userId } в момент открытия. Диалог появляется в «Сообщениях», даже если ничего не отправили. Сборку записи при отправке лучше отдать в upsertConversation в conversationsStorage.
     if (!conversations.some((item) => item.userId === userId)) {
       conversations.unshift({ userId });
       saveConversations(conversations);
     }
 
-    const socket = new WebSocket('wss://ws.ifelse.io');
+    const socket = new WebSocket("wss://ws.ifelse.io");
     socketRef.current = socket;
 
-    socket.onopen = () => setStatus('Подключено');
+    socket.onopen = () => setStatus("Подключено");
 
     socket.onmessage = (event: MessageEvent<string>) => {
-      if (event.data.startsWith('Request served by')) {
+      if (event.data.startsWith("Request served by")) {
         return;
       }
 
       const newMessage: IMessage = {
         id: crypto.randomUUID(),
         text: event.data,
-        sender: 'other',
+        sender: "other",
       };
 
       saveMessages([...messagesRef.current, newMessage]);
     };
 
-    socket.onerror = () => setStatus('Ошибка соединения');
-    socket.onclose = () => setStatus('Соединение закрыто');
+    socket.onerror = () => setStatus("Ошибка соединения");
+    socket.onclose = () => setStatus("Соединение закрыто");
 
     return () => {
       socket.close();
@@ -89,6 +91,8 @@ export const useChatSocket = (userId: string) => {
 
       if (!text || !socket || socket.readyState !== WebSocket.OPEN) {
         return false;
+        // а в чём проблема тут  выкидывать ошибку, что за сложности с true false,
+        // ладно, нейронка тебя засейваила всё норм)
       }
 
       socket.send(text);
@@ -96,7 +100,7 @@ export const useChatSocket = (userId: string) => {
       const newMessage: IMessage = {
         id: crypto.randomUUID(),
         text,
-        sender: 'user',
+        sender: "user",
       };
 
       saveMessages([...messagesRef.current, newMessage]);

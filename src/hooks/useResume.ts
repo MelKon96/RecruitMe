@@ -10,6 +10,8 @@ export const useResume = () => {
       setResume(getResume());
     };
 
+    // Связано с dispatchEvent в storage/resumeStorage.ts.
+    // Этот слушатель можно убрать: useResume читает резюме из ResumeProvider, а не ждёт событие resume-updated.
     window.addEventListener('resume-updated', updateResume);
     window.addEventListener('storage', updateResume);
 

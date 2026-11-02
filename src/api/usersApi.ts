@@ -1,6 +1,6 @@
-import type { IUser } from '../types/user';
-import type { IRawUser } from '../types/rawUser';
-import { adaptUser } from '../utils/adapters';
+import type { IUser } from "../types/user";
+import type { IRawUser } from "../types/rawUser";
+import { adaptUser } from "../utils/adapters";
 
 interface IRawUsersResponse {
   users: IRawUser[];
@@ -12,7 +12,7 @@ interface IRawUsersResponse {
 const requestJson = async <T>(
   url: string,
   signal?: AbortSignal,
-  errorMessage = 'Не удалось загрузить данные',
+  errorMessage = "Не удалось загрузить данные",
 ): Promise<T> => {
   const response = await fetch(url, { signal });
 
@@ -24,9 +24,10 @@ const requestJson = async <T>(
 };
 
 export const queryKeys = {
-  users: ['users'] as const,
-  user: (id: number) => ['user', id] as const,
-  usersInfinite: ['users-infinite'] as const,
+  // Здесь можно удалить users: ключ нигде не читается, страницы берут usersInfinite и user(id).
+  users: ["users"] as const,
+  user: (id: number) => ["user", id] as const,
+  usersInfinite: ["users-infinite"] as const,
 };
 
 export const fetchUsers = async ({
@@ -56,7 +57,8 @@ export const fetchUsersPage = async ({
   pageParam?: number;
   signal?: AbortSignal;
 }) => {
-  const limit = 10;
+  //а где вот  тут что возвращает функция?
+  const limit = 10; //вынести в константу, или в пропс
   const result = await fetchUsers({ signal, limit, skip: pageParam });
   const nextSkip = pageParam + limit;
 
@@ -74,7 +76,7 @@ export const fetchUserById = async (
   const user = await requestJson<IRawUser>(
     `https://dummyjson.com/users/${id}`,
     signal,
-    'Пользователь не найден',
+    "Пользователь не найден",
   );
 
   return adaptUser(user);

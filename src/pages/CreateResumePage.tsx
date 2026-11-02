@@ -1,16 +1,18 @@
-import { Link, useNavigate } from '@tanstack/react-router';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { IUser } from '../types/user';
-import { resumeSchema } from '../schemas/resumeSchema';
-import type { ResumeFormValues } from '../schemas/resumeSchema';
-import { ResumeForm } from '../components/ResumeForm';
-import { ROUTES } from '../constants/paths';
-import { useResume } from '../hooks/useResume';
-import { saveResume } from '../storage/resumeStorage';
-import { OWN_RESUME_ID } from '../constants/id';
+import type { IUser } from "../types/user";
+import { resumeSchema } from "../schemas/resumeSchema";
+import type { ResumeFormValues } from "../schemas/resumeSchema";
+import { ResumeForm } from "../components/ResumeForm";
+import { ROUTES } from "../constants/paths";
+import { useResume } from "../hooks/useResume";
+// Связано с storage/resumeStorage.ts: saveResume брать из ResumeProvider, а не вызывать storage напрямую.
+import { saveResume } from "../storage/resumeStorage";
+import { OWN_RESUME_ID } from "../constants/id";
 
+//Добавить валидацию для номера телефона
 const toResume = (data: ResumeFormValues): IUser => ({
   id: OWN_RESUME_ID,
   firstName: data.firstName,
@@ -43,17 +45,17 @@ export const CreateResumePage = () => {
   } = useForm<ResumeFormValues>({
     resolver: zodResolver(resumeSchema),
     defaultValues: {
-      firstName: savedResume?.firstName ?? '',
-      lastName: savedResume?.lastName ?? '',
-      position: savedResume?.company.title ?? '',
-      level: savedResume?.level ?? 'Junior',
-      email: savedResume?.email ?? '',
-      phone: savedResume?.phone ?? '',
+      firstName: savedResume?.firstName ?? "",
+      lastName: savedResume?.lastName ?? "",
+      position: savedResume?.company.title ?? "",
+      level: savedResume?.level ?? "Junior",
+      email: savedResume?.email ?? "",
+      phone: savedResume?.phone ?? "",
       skills: savedResume?.skills ?? [],
-      bio: savedResume?.bio ?? '',
-      companyName: savedResume?.company.name ?? '',
-      department: savedResume?.company.department ?? '',
-      location: savedResume?.location ?? '',
+      bio: savedResume?.bio ?? "",
+      companyName: savedResume?.company.name ?? "",
+      department: savedResume?.company.department ?? "",
+      location: savedResume?.location ?? "",
     },
   });
 
@@ -72,7 +74,7 @@ export const CreateResumePage = () => {
       </Link>
 
       <h1 className="mt-4 mb-2 text-2xl font-bold text-gray-900">
-        {savedResume ? 'Редактировать резюме' : 'Создать резюме'}
+        {savedResume ? "Редактировать резюме" : "Создать резюме"}
       </h1>
 
       <p className="mb-8 text-gray-600">
@@ -84,7 +86,7 @@ export const CreateResumePage = () => {
         control={control}
         errors={errors}
         onSubmit={handleSubmit(onSubmit)}
-        submitLabel={savedResume ? 'Сохранить изменения' : 'Создать резюме'}
+        submitLabel={savedResume ? "Сохранить изменения" : "Создать резюме"}
       />
     </section>
   );

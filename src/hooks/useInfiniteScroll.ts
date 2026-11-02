@@ -13,6 +13,7 @@ export const useInfiniteScroll = (
   useEffect(() => {
     const target = targetRef.current;
 
+    // Здесь можно не выходить молча, если узла ещё нет: смена ref.current не перезапускает эффект, и когда sentinel появится позже, наблюдатель так и не подпишется.
     if (!target) return;
 
     const observer = new IntersectionObserver(

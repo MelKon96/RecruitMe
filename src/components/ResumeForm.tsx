@@ -3,12 +3,12 @@ import {
   type Control,
   type FieldErrors,
   type UseFormRegister,
-} from 'react-hook-form';
+} from "react-hook-form";
 
-import type { ResumeFormValues } from '../schemas/resumeSchema';
-import { DEV_LEVELS } from '../constants/devLevels';
-import { SkillsInput } from './SkillsInput';
-import { Field } from './Field';
+import type { ResumeFormValues } from "../schemas/resumeSchema";
+import { DEV_LEVELS } from "../constants/devLevels";
+import { SkillsInput } from "./SkillsInput";
+import { Field } from "./Field";
 
 interface ResumeFormProps {
   register: UseFormRegister<ResumeFormValues>;
@@ -17,16 +17,16 @@ interface ResumeFormProps {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   submitLabel?: string;
 }
-
+//большие буквы
 const inputClassName =
-  'w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100';
+  "w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100";
 
 export const ResumeForm = ({
   register,
   control,
   errors,
   onSubmit,
-  submitLabel = 'Создать резюме',
+  submitLabel = "Создать резюме",
 }: ResumeFormProps) => {
   return (
     <form
@@ -42,7 +42,7 @@ export const ResumeForm = ({
         >
           <input
             id="firstName"
-            {...register('firstName')}
+            {...register("firstName")}
             className={inputClassName}
             placeholder="Иван"
           />
@@ -55,7 +55,7 @@ export const ResumeForm = ({
         >
           <input
             id="lastName"
-            {...register('lastName')}
+            {...register("lastName")}
             className={inputClassName}
             placeholder="Иванов"
           />
@@ -69,7 +69,7 @@ export const ResumeForm = ({
       >
         <input
           id="position"
-          {...register('position')}
+          {...register("position")}
           className={inputClassName}
           placeholder="Frontend-разработчик"
         />
@@ -80,7 +80,7 @@ export const ResumeForm = ({
         htmlFor="level"
         error={errors.level?.message}
       >
-        <select id="level" {...register('level')} className={inputClassName}>
+        <select id="level" {...register("level")} className={inputClassName}>
           {DEV_LEVELS.map((level) => (
             <option key={level} value={level}>
               {level}
@@ -94,7 +94,7 @@ export const ResumeForm = ({
           <input
             id="email"
             type="email"
-            {...register('email')}
+            {...register("email")}
             className={inputClassName}
             placeholder="ivan@example.com"
           />
@@ -104,7 +104,7 @@ export const ResumeForm = ({
           <input
             id="phone"
             type="tel"
-            {...register('phone')}
+            {...register("phone")}
             className={inputClassName}
             placeholder="+7 900 123-45-67"
           />
@@ -127,7 +127,7 @@ export const ResumeForm = ({
         <textarea
           id="bio"
           rows={5}
-          {...register('bio')}
+          {...register("bio")}
           className={`${inputClassName} resize-none`}
           placeholder="Расскажите о своём опыте и профессиональных целях"
         />
@@ -143,7 +143,7 @@ export const ResumeForm = ({
       <Field label="Компания" htmlFor="companyName">
         <input
           id="companyName"
-          {...register('companyName')}
+          {...register("companyName")}
           className={inputClassName}
           placeholder="Название компании"
         />
@@ -152,7 +152,7 @@ export const ResumeForm = ({
       <Field label="Отдел или описание опыта" htmlFor="department">
         <input
           id="department"
-          {...register('department')}
+          {...register("department")}
           className={inputClassName}
           placeholder="Frontend-разработка, 3 года опыта"
         />
@@ -161,7 +161,7 @@ export const ResumeForm = ({
       <Field label="Местоположение" htmlFor="location">
         <input
           id="location"
-          {...register('location')}
+          {...register("location")}
           className={inputClassName}
           placeholder="Москва или удалённо"
         />

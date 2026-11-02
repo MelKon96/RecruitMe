@@ -13,6 +13,7 @@ const queryClient = new QueryClient({
   },
 });
 
+// Связано с storage/resumeStorage.ts: обернуть App в ResumeProvider, чтобы сохранение и удаление резюме меняли state без window.dispatchEvent.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

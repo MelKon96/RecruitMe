@@ -102,6 +102,7 @@ export const SkillsInput = ({
             if (event.key === 'Enter') {
               event.preventDefault();
 
+              // Здесь можно сначала брать точное совпадение, а не suggestions[0]. «Java» попадёт в «JavaScript»: он раньше в списке, а фильтр проверяет includes.
               if (suggestions.length > 0) {
                 addSkill(suggestions[0]);
               } else if (skillInput.trim()) {
@@ -119,11 +120,13 @@ export const SkillsInput = ({
           }
           autoComplete="off"
           role="combobox"
+          // Здесь можно добавить aria-autocomplete="list" и aria-activedescendant. Списку ниже — role="listbox", пунктам — role="option" и id. Сейчас это поле с подсказками, но для скринридера оно не связано со списком как combobox.
           aria-expanded={isSuggestionsOpen && Boolean(normalizedInput)}
           aria-controls="skill-suggestions"
         />
       </div>
 
+      {/* Здесь можно не показывать список, если подсказок нет и такой навык уже добавлен. Сейчас остаётся пустой ul с рамкой. */}
       {isSuggestionsOpen && normalizedInput && (
         <ul
           id="skill-suggestions"
@@ -162,6 +165,7 @@ export const SkillsInput = ({
         чтобы добавить.
       </p>
 
+      {/* Здесь можно связать ошибку с полем: id="skills-error", у input aria-invalid и aria-describedby="skills-error". Иначе скринридер не читает текст ошибки вместе с полем. */}
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );

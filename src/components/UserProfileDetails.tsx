@@ -19,6 +19,7 @@ export const UserProfileDetails = ({
         <div className="flex flex-wrap gap-2">
           {user.skills.map((skill) =>
             onSkillClick ? (
+              // Здесь можно заменить title на aria-label={`Найти специалистов со знанием ${skill}`}. title часть скринридеров не читает, а по тексту кнопки неясно, что она открывает поиск.
               <button
                 key={skill}
                 type="button"

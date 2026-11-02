@@ -19,6 +19,7 @@ export const Field = ({ label, htmlFor, error, children }: IFieldProps) => {
 
       {children}
 
+      {/* Здесь можно дать ошибке id={`${htmlFor}-error`} и role="alert", а на input в ResumeForm повесить aria-invalid и aria-describedby с этим id. Сейчас подпись есть, а текст ошибки с полем не связан. */}
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
     </div>
   );
