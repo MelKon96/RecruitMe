@@ -102,7 +102,13 @@ export const SkillsInput = ({
             if (event.key === 'Enter') {
               event.preventDefault();
 
-              if (suggestions.length > 0) {
+              const exactMatch = suggestions.find(
+                (technology) => technology.toLowerCase() === normalizedInput,
+              );
+
+              if (exactMatch) {
+                addSkill(exactMatch);
+              } else if (suggestions.length > 0) {
                 addSkill(suggestions[0]);
               } else if (skillInput.trim()) {
                 addSkill(skillInput);
@@ -124,7 +130,7 @@ export const SkillsInput = ({
         />
       </div>
 
-      {isSuggestionsOpen && normalizedInput && (
+      {isSuggestionsOpen && normalizedInput && suggestions.length > 0 && (
         <ul
           id="skill-suggestions"
           className="mt-1 max-h-52 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
