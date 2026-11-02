@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
@@ -11,7 +11,6 @@ import { filterUsers } from '../utils/filterUsers';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const resume = useResume();
 
   const { search } = useSearch({ from: ROUTES.home });
@@ -59,7 +58,7 @@ export const UsersPage = () => {
     fetchNextPage,
   ]);
 
-  useInfiniteScroll(loadMoreRef, {
+  const loadMoreRef = useInfiniteScroll({
     hasNextPage: hasNextPage && (!isSearching || filteredUsers.length > 0),
     isFetchingNextPage,
     fetchNextPage,
