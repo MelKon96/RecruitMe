@@ -24,7 +24,6 @@ const requestJson = async <T>(
 };
 
 export const queryKeys = {
-  users: ['users'] as const,
   user: (id: number) => ['user', id] as const,
   usersInfinite: ['users-infinite'] as const,
 };
