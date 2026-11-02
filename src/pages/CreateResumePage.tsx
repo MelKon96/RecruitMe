@@ -8,7 +8,7 @@ import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
 import { ROUTES } from '../constants/paths';
 import { useResume } from '../hooks/useResume';
-import { saveResume } from '../storage/resumeStorage';
+import { useResumeContext } from '../context/useResumeContext';
 import { OWN_RESUME_ID } from '../constants/id';
 
 const toResume = (data: ResumeFormValues): IUser => ({
@@ -34,6 +34,7 @@ const toResume = (data: ResumeFormValues): IUser => ({
 export const CreateResumePage = () => {
   const navigate = useNavigate();
   const savedResume = useResume();
+  const { saveResume } = useResumeContext();
 
   const {
     register,

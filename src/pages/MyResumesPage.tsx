@@ -2,11 +2,12 @@ import { Link } from '@tanstack/react-router';
 import { FileText, Pencil, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
 import { useResume } from '../hooks/useResume';
-import { removeResume } from '../storage/resumeStorage';
+import { useResumeContext } from '../context/useResumeContext';
 import { UserProfileDetails } from '../components/UserProfileDetails';
 
 export const MyResumesPage = () => {
   const resume = useResume();
+  const { removeResume } = useResumeContext();
 
   const handleDelete = () => {
     removeResume();
