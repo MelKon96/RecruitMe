@@ -3,57 +3,50 @@ import {
   createRoute,
   createRouter,
   lazyRouteComponent,
-  Outlet,
 } from '@tanstack/react-router';
 
 import { UsersPage } from '../pages/UsersPage';
 import { UserDetailPage } from '../pages/UserDetailPage';
 import { MyResumesPage } from '../pages/MyResumesPage';
-
-import { Header } from '../components/Header';
-import { Footer } from '../components/Footer';
-import { ScrollToTop } from '../components/ScrollToTop';
 import { MessagesPage } from '../pages/MessagesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
-// Здесь можно вынести разметку в components/RootLayout.tsx, пути взять из constants/paths.ts и добавить validateSearch для / и /chat/$userId, чтобы поиск и параметр from были типизированы.
+import { RootLayout } from '../components/RootLayout';
+import { ROUTES } from '../constants/paths';
+
 const rootRoute = createRootRoute({
-  component: () => (
-    <div className="flex min-h-screen flex-col bg-gray-50 font-sans text-gray-900">
-      <ScrollToTop />
-      <Header />
-
-      <div className="flex-1">
-        <Outlet />
-      </div>
-
-      <Footer />
-    </div>
-  ),
+  component: RootLayout,
   notFoundComponent: NotFoundPage,
 });
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/',
+  path: ROUTES.home,
+  validateSearch: (search: Record<string, unknown>): { search?: string } => {
+    const value = search.search;
+
+    return typeof value === 'string' && value.length > 0
+      ? { search: value }
+      : {};
+  },
   component: UsersPage,
 });
 
 const userDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/users/$id',
+  path: ROUTES.users,
   component: UserDetailPage,
 });
 
 const myResumesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/my-resumes',
+  path: ROUTES.myResumes,
   component: MyResumesPage,
 });
 
 const createResumeRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/create-resume',
+  path: ROUTES.createResume,
   component: lazyRouteComponent(
     () => import('../pages/CreateResumePage'),
     'CreateResumePage',
@@ -62,13 +55,21 @@ const createResumeRoute = createRoute({
 
 const chatRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/chat/$userId',
+  path: ROUTES.chat,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { from?: 'user' | 'messages' } => ({
+    from:
+      search.from === 'user' || search.from === 'messages'
+        ? search.from
+        : undefined,
+  }),
   component: lazyRouteComponent(() => import('../pages/ChatPage'), 'ChatPage'),
 });
 
 const messagesRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/messages',
+  path: ROUTES.messages,
   component: MessagesPage,
 });
 

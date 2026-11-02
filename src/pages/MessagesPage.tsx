@@ -1,32 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { useQuery } from '@tanstack/react-query';
-import { fetchUsers } from '../api/usersApi';
-import type { IUser } from '../types/user';
+import { useQueries } from '@tanstack/react-query';
 import { MessageCircle, Trash2 } from 'lucide-react';
+
+import { fetchUserById, queryKeys } from '../api/usersApi';
 import { ROUTES } from '../constants/paths';
-
-// Здесь можно перенести IConversation, CONVERSATIONS_KEY и getConversations в storage/conversationsStorage.ts: копия лежит в ChatPage.tsx.
-interface IConversation {
-  userId: string;
-  lastMessage?: string;
-  messages?: {
-    id: string;
-    text: string;
-    sender: 'user' | 'other';
-  }[];
-}
-
-const CONVERSATIONS_KEY = 'recruit_me_conversations';
-
-const getConversations = (): IConversation[] => {
-  try {
-    const stored = localStorage.getItem(CONVERSATIONS_KEY);
-    return stored ? (JSON.parse(stored) as IConversation[]) : [];
-  } catch {
-    return [];
-  }
-};
+import type { IConversation } from '../types/conversation';
+import {
+  getConversations,
+  removeConversation,
+} from '../storage/conversationsStorage';
+import { OWN_RESUME_ID } from '../constants/id';
 
 export const MessagesPage = () => {
   const navigate = useNavigate();
@@ -36,29 +20,44 @@ export const MessagesPage = () => {
 
   const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
-  const {
-    data: usersData,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['users'],
-    // Здесь можно грузить пользователей по id из переписок, а не первые 10: диалог с человеком вне этой страницы dummyjson пропадёт из списка.
-    queryFn: () => fetchUsers({ limit: 10 }),
+  const userIds = [
+    ...new Set(
+      conversations
+        .map(({ userId }) => userId)
+        .filter((userId) => {
+          const id = Number(userId);
+
+          return Number.isInteger(id) && id > 0 && id !== OWN_RESUME_ID;
+        }),
+    ),
+  ];
+
+  const userQueries = useQueries({
+    queries: userIds.map((userId) => {
+      const numericId = Number(userId);
+
+      return {
+        queryKey: queryKeys.user(numericId),
+        queryFn: ({ signal }: { signal: AbortSignal }) =>
+          fetchUserById(numericId, { signal }),
+        enabled: Number.isFinite(numericId),
+      };
+    }),
   });
 
-  const users = usersData?.users ?? [];
+  const users = userQueries.flatMap((query) =>
+    query.data ? [query.data] : [],
+  );
+
+  const usersById = new Map(users.map((user) => [String(user.id), user]));
+
+  const isLoading = userQueries.some((query) => query.isLoading);
+
+  const hasError =
+    userQueries.length > 0 && userQueries.every((query) => query.isError);
 
   const handleDelete = (userId: string) => {
-    const updatedConversations = getConversations().filter(
-      (conversation) => conversation.userId !== userId,
-    );
-
-    localStorage.setItem(
-      CONVERSATIONS_KEY,
-      JSON.stringify(updatedConversations),
-    );
-
-    setConversations(updatedConversations);
+    setConversations(removeConversation(userId));
     setDeletingUserId(null);
   };
 
@@ -71,7 +70,7 @@ export const MessagesPage = () => {
     );
   }
 
-  if (error) {
+  if (hasError && users.length === 0) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="mb-6 text-2xl font-bold text-gray-900">Сообщения</h1>
@@ -81,7 +80,7 @@ export const MessagesPage = () => {
   }
 
   const visibleConversations = conversations.filter((conversation) =>
-    users.some((user) => String(user.id) === conversation.userId),
+    usersById.has(conversation.userId),
   );
 
   return (
@@ -106,9 +105,7 @@ export const MessagesPage = () => {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
           {visibleConversations.map((conversation) => {
-            const user = users.find(
-              (item: IUser) => String(item.id) === conversation.userId,
-            );
+            const user = usersById.get(conversation.userId);
 
             if (!user) return null;
 

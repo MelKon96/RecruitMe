@@ -1,19 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
 import { ROUTES } from '../constants/paths';
+import { OWN_RESUME_ID } from '../constants/id';
+import { LEVEL_COLORS } from '../constants/levelColors';
+import { UserProfileDetails } from './UserProfileDetails';
 
 interface IUserDetailCardProps {
   user: IUser;
   onBack: () => void;
 }
-
-// Здесь можно импортировать levelColors из общего модуля с UserCard, а не объявлять палитру второй раз.
-const levelColors: Record<IUser['level'], string> = {
-  Junior: 'bg-green-100 text-green-800 border-green-200',
-  Middle: 'bg-blue-100 text-blue-800 border-blue-200',
-  Senior: 'bg-purple-100 text-purple-800 border-purple-200',
-  Lead: 'bg-amber-100 text-amber-800 border-amber-200',
-};
 
 export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
   const navigate = useNavigate();
@@ -49,7 +44,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
               </h1>
 
               <span
-                className={`self-center rounded-full border px-3 py-1 text-xs font-semibold sm:self-auto ${levelColors[user.level]}`}
+                className={`self-center rounded-full border px-3 py-1 text-xs font-semibold sm:self-auto ${LEVEL_COLORS[user.level]}`}
               >
                 {user.level}
               </span>
@@ -65,52 +60,10 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
           </div>
         </div>
 
-        <div className="border-b border-gray-100 py-6">
-          <h3 className="mb-3 text-sm font-semibold tracking-wider text-gray-400 uppercase">
-            Технологический стек
-          </h3>
+        <UserProfileDetails user={user} onSkillClick={handleSkillClick} />
 
-          <div className="flex flex-wrap gap-2">
-            {user.skills.map((skill) => (
-              <button
-                key={skill}
-                type="button"
-                onClick={() => handleSkillClick(skill)}
-                className="cursor-pointer rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-100 focus-visible:outline-2 focus-visible:outline-indigo-500"
-                title={`Найти специалистов со знанием ${skill}`}
-              >
-                {skill}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-b border-gray-100 py-6">
-          <h3 className="mb-2 text-sm font-semibold tracking-wider text-gray-400 uppercase">
-            О кандидате
-          </h3>
-
-          <p className="leading-relaxed text-gray-700">{user.bio}</p>
-        </div>
-
-        <div className="flex flex-col items-center justify-between gap-4 pt-6 text-sm text-gray-600 sm:flex-row">
-          <div>
-            <span className="font-medium text-gray-900">Телефон:</span>{' '}
-            {/* Здесь можно проверять непустой trim, а не phone.length > 7, и валидировать телефон в resumeSchema. */}
-            {user.phone.length > 7 ? (
-              <a
-                href={`tel:${user.phone}`}
-                className="text-indigo-600 hover:underline"
-              >
-                {user.phone}
-              </a>
-            ) : (
-              'Не указан'
-            )}
-          </div>
-
-          {/* Здесь можно сравнивать user.id с OWN_RESUME_ID, а не с магическим -1. */}
-          {user.id !== -1 && (
+        {user.id !== OWN_RESUME_ID && (
+          <div className="flex justify-end pt-6">
             <button
               type="button"
               onClick={() =>
@@ -124,22 +77,8 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
             >
               Написать
             </button>
-          )}
-
-          <div>
-            <span className="font-medium text-gray-900">Email:</span>{' '}
-            {user.email ? (
-              <a
-                href={`mailto:${user.email}`}
-                className="text-indigo-600 hover:underline"
-              >
-                {user.email}
-              </a>
-            ) : (
-              'Не указан'
-            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

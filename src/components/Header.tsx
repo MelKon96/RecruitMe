@@ -3,6 +3,12 @@ import { Link } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
 
+const NAV_ITEMS = [
+  { label: 'Специалисты', to: ROUTES.home, exact: true },
+  { label: 'Сообщения', to: ROUTES.messages },
+  { label: 'Мои резюме', to: ROUTES.myResumes },
+] as const;
+
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -30,30 +36,17 @@ export const Header = () => {
 
         {/* Здесь можно завести массив NAV_ITEMS и отрисовать его и в этом nav, и в мобильном ниже: три ссылки описаны дважды. */}
         <nav className="hidden items-center gap-8 md:flex">
-          <Link
-            to={ROUTES.home}
-            activeProps={{ className: 'text-indigo-600' }}
-            activeOptions={{ exact: true }}
-            className={linkClass}
-          >
-            Специалисты
-          </Link>
-
-          <Link
-            to={ROUTES.messages}
-            activeProps={{ className: 'text-indigo-600' }}
-            className={linkClass}
-          >
-            Сообщения
-          </Link>
-
-          <Link
-            to={ROUTES.myResumes}
-            activeProps={{ className: 'text-indigo-600' }}
-            className={linkClass}
-          >
-            Мои резюме
-          </Link>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              activeProps={{ className: 'text-indigo-600' }}
+              activeOptions={{ exact: 'exact' in item && item.exact }}
+              className={linkClass}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
         <button
@@ -73,33 +66,18 @@ export const Header = () => {
           id="mobile-navigation"
           className="flex flex-col gap-1 border-t border-gray-200 px-4 py-3 md:hidden"
         >
-          <Link
-            to={ROUTES.home}
-            onClick={closeMenu}
-            activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
-            activeOptions={{ exact: true }}
-            className={`${linkClass} rounded-lg px-3 py-3`}
-          >
-            Специалисты
-          </Link>
-
-          <Link
-            to={ROUTES.messages}
-            onClick={closeMenu}
-            activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
-            className={`${linkClass} rounded-lg px-3 py-3`}
-          >
-            Сообщения
-          </Link>
-
-          <Link
-            to={ROUTES.myResumes}
-            onClick={closeMenu}
-            activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
-            className={`${linkClass} rounded-lg px-3 py-3`}
-          >
-            Мои резюме
-          </Link>
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              onClick={closeMenu}
+              activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
+              activeOptions={{ exact: 'exact' in item && item.exact }}
+              className={`${linkClass} rounded-lg px-3 py-3`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
       )}
     </header>

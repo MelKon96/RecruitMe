@@ -1,24 +1,18 @@
 import type { IUser } from '../types/user';
+import { LEVEL_COLORS } from '../constants/levelColors';
 
 interface IUserCardProps {
   user: IUser;
   onClick: () => void;
 }
 
-// Здесь можно вынести levelColors в constants/levelColors.ts или компонент LevelBadge: тот же объект скопирован в UserDetailCard.tsx.
-const levelColors: Record<IUser['level'], string> = {
-  Junior: 'bg-green-100 text-green-800 border-green-200',
-  Middle: 'bg-blue-100 text-blue-800 border-blue-200',
-  Senior: 'bg-purple-100 text-purple-800 border-purple-200',
-  Lead: 'bg-amber-100 text-amber-800 border-amber-200',
-};
-
 export const UserCard = ({ user, onClick }: IUserCardProps) => {
   // Здесь можно сделать button или article с клавиатурным обработчиком: div с onClick не получает фокус.
   return (
-    <div
+    <button
+      type="button"
       onClick={onClick}
-      className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-4"
+      className="w-full text-left bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow cursor-pointer flex flex-col justify-between gap-4"
     >
       <div className="flex items-start gap-4">
         <img
@@ -26,19 +20,22 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
           alt={`${user.firstName} ${user.lastName}`}
           className="w-14 h-14 rounded-full object-cover border border-gray-100"
         />
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <h2 className="font-semibold text-gray-900 truncate">
               {user.firstName} {user.lastName}
             </h2>
+
             <span
               className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${
-                levelColors[user.level]
+                LEVEL_COLORS[user.level]
               }`}
             >
               {user.level}
             </span>
           </div>
+
           <p className="text-sm text-gray-500 truncate">{user.company.title}</p>
         </div>
       </div>
@@ -56,10 +53,11 @@ export const UserCard = ({ user, onClick }: IUserCardProps) => {
 
       <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
         <span>{user.email}</span>
+
         <span className="text-indigo-600 font-medium hover:underline">
           Профиль →
         </span>
       </div>
-    </div>
+    </button>
   );
 };

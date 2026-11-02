@@ -1,29 +1,15 @@
-import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import type { IUser } from '../types/user';
-import { Pencil, Trash2 } from 'lucide-react';
+import { FileText, Pencil, Trash2 } from 'lucide-react';
 import { ROUTES } from '../constants/paths';
-
-// Здесь можно читать и удалять резюме через общий storage-модуль: ключ и JSON.parse повторяются на UsersPage, UserDetailPage и CreateResumePage, событие resume-updated — строковый литерал.
-const RESUME_STORAGE_KEY = 'recruit_me_resume';
+import { useResume } from '../hooks/useResume';
+import { removeResume } from '../storage/resumeStorage';
+import { UserProfileDetails } from '../components/UserProfileDetails';
 
 export const MyResumesPage = () => {
-  const [resume, setResume] = useState<IUser | null>(() => {
-    const savedResume = localStorage.getItem(RESUME_STORAGE_KEY);
-
-    if (!savedResume) return null;
-
-    try {
-      return JSON.parse(savedResume) as IUser;
-    } catch {
-      return null;
-    }
-  });
+  const resume = useResume();
 
   const handleDelete = () => {
-    localStorage.removeItem(RESUME_STORAGE_KEY);
-    window.dispatchEvent(new Event('resume-updated'));
-    setResume(null);
+    removeResume();
   };
 
   return (
@@ -43,23 +29,7 @@ export const MyResumesPage = () => {
       {!resume ? (
         <div className="flex min-h-[45vh] flex-col items-center justify-center text-center">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
-            {/* Здесь можно поставить иконку FileText из lucide-react: Pencil и Trash2 на этой странице уже оттуда, а svg нарисован вручную. */}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <path d="M14 2v6h6" />
-              <path d="M8 13h8" />
-              <path d="M8 17h8" />
-            </svg>
+            <FileText size={32} strokeWidth={1.8} />
           </div>
 
           <h2 className="text-xl font-semibold text-gray-900">
@@ -124,42 +94,7 @@ export const MyResumesPage = () => {
             </div>
           </div>
 
-          <div className="mt-6 border-t border-gray-100 pt-5">
-            <h3 className="font-semibold text-gray-900">Навыки</h3>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {resume.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-700"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6 border-t border-gray-100 pt-5">
-            <h3 className="font-semibold text-gray-900">О себе</h3>
-
-            <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">
-              {resume.bio}
-            </p>
-          </div>
-
-          <div className="mt-6 border-t border-gray-100 pt-5">
-            <h3 className="font-semibold text-gray-900">Контакты</h3>
-
-            <p className="mt-2 text-sm text-gray-600">{resume.email}</p>
-
-            {resume.phone && (
-              <p className="mt-1 text-sm text-gray-600">{resume.phone}</p>
-            )}
-
-            {resume.location && (
-              <p className="mt-1 text-sm text-gray-600">{resume.location}</p>
-            )}
-          </div>
+          <UserProfileDetails user={resume} />
         </article>
       )}
     </section>

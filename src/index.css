@@ -1,3 +1,4 @@
+
 @import 'tailwindcss';
 
 /* Здесь можно оставить у #root только колонку на всю ширину: max-width 1200px и padding дублируют max-w-7xl и px-4 на страницах, шапка и контент сужаются дважды. */
@@ -6,15 +7,13 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  box-sizing: border-box;
 }
+
 html {
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
 }
+
 input[type='search']::-webkit-search-cancel-button {
   cursor: pointer;
 }

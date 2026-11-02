@@ -1,23 +1,38 @@
-import { useState } from 'react';
-import type { UseFormRegister } from 'react-hook-form';
-import type { ResumeFormValues } from '../schemas/resumeSchema';
+import { useEffect, useRef, useState } from 'react';
 import { technologies } from '../constants/technologies';
 
 interface SkillsInputProps {
   skills: string[];
   onSkillsChange: (skills: string[]) => void;
-  register: UseFormRegister<ResumeFormValues>;
   error?: string;
 }
 
 export const SkillsInput = ({
   skills,
   onSkillsChange,
-  register,
   error,
 }: SkillsInputProps) => {
   const [skillInput, setSkillInput] = useState('');
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsSuggestionsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const normalizedInput = skillInput.trim().toLowerCase();
 
@@ -49,7 +64,7 @@ export const SkillsInput = ({
   };
 
   return (
-    <div>
+    <div ref={containerRef}>
       <label
         htmlFor="skillInput"
         className="mb-2 block text-sm font-medium text-gray-700"
@@ -68,7 +83,7 @@ export const SkillsInput = ({
               type="button"
               onClick={() => removeSkill(skill)}
               aria-label={`Удалить ${skill}`}
-              className="ml-1 rounded-full hover:text-red-600 cursor-pointer"
+              className="ml-1 cursor-pointer rounded-full hover:text-red-600"
             >
               ×
             </button>
@@ -83,10 +98,6 @@ export const SkillsInput = ({
             setIsSuggestionsOpen(true);
           }}
           onFocus={() => setIsSuggestionsOpen(true)}
-          // Здесь можно закрывать подсказки по клику снаружи через ref: setTimeout(150) нужен только чтобы успеть поймать click по пункту, хотя onMouseDown на кнопке уже вызывает preventDefault.
-          onBlur={() => {
-            setTimeout(() => setIsSuggestionsOpen(false), 150);
-          }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               event.preventDefault();
@@ -124,7 +135,7 @@ export const SkillsInput = ({
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => addSkill(technology)}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700"
+                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 hover:cursor-pointer"
               >
                 {technology}
               </button>
@@ -145,9 +156,6 @@ export const SkillsInput = ({
           )}
         </ul>
       )}
-
-      {/* Здесь можно убрать скрытое поле, если skills в схеме станут string[] и значение пойдёт через Controller или setValue без join через запятую. */}
-      <input type="hidden" {...register('skills')} />
 
       <p className="mt-2 text-xs text-gray-500">
         Выберите технологию из подсказок или введите собственную. Нажмите Enter,
