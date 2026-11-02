@@ -4,6 +4,8 @@ import { ROUTES } from '../constants/paths';
 import { useResume } from '../hooks/useResume';
 import { useResumeContext } from '../context/useResumeContext';
 import { UserProfileDetails } from '../components/UserProfileDetails';
+import { LEVEL_COLORS } from '../constants/levelColors';
+
 
 export const MyResumesPage = () => {
   const resume = useResume();
@@ -67,7 +69,7 @@ export const MyResumesPage = () => {
 
                 <p className="mt-1 text-gray-600">{resume.company.title}</p>
 
-                <span className="mt-2 inline-block rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
+                <span className={`mt-2 inline-block rounded-full border px-3 py-1 text-xs font-medium ${LEVEL_COLORS[resume.level]}`}>
                   {resume.level}
                 </span>
               </div>
