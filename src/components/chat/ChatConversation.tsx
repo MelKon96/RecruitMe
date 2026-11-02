@@ -4,6 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../../types/user';
 import { ROUTES } from '../../constants/paths';
 import { useChatSocket } from '../../hooks/useChatSocket';
+import { CHAT_STATUS_LABELS } from '../../constants/chatStatus';
 
 interface IChatConversationProps {
   userId: string;
@@ -66,7 +67,9 @@ export const ChatConversation = ({
             Чат с {user.firstName} {user.lastName}
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">Статус: {status}</p>
+          <p className="mt-1 text-sm text-gray-500">
+            Статус: {CHAT_STATUS_LABELS[status]}
+          </p>
         </div>
 
         <div className="flex min-h-80 flex-col gap-3 p-5">
@@ -104,7 +107,7 @@ export const ChatConversation = ({
 
           <button
             type="submit"
-            disabled={!message.trim() || status !== 'Подключено'}
+            disabled={!message.trim() || status !== 'open'}
             className="cursor-pointer rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Отправить
