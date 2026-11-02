@@ -45,49 +45,26 @@ export const MessagesPage = () => {
     }),
   });
 
-  const users = userQueries.flatMap((query) =>
-    query.data ? [query.data] : [],
+  const usersById = new Map(
+    userQueries.flatMap((query) =>
+      query.data ? [[String(query.data.id), query.data] as const] : [],
+    ),
   );
 
-  const usersById = new Map(users.map((user) => [String(user.id), user]));
-
-  const isLoading = userQueries.some((query) => query.isLoading);
-
-  const hasError =
-    userQueries.length > 0 && userQueries.every((query) => query.isError);
+  const queryByUserId = new Map(
+    userIds.map((userId, index) => [userId, userQueries[index]]),
+  );
 
   const handleDelete = (userId: string) => {
     setConversations(removeConversation(userId));
     setDeletingUserId(null);
   };
 
-  if (isLoading) {
-    return (
-      <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">Сообщения</h1>
-        <p className="text-gray-500">Загрузка пользователей...</p>
-      </main>
-    );
-  }
-
-  if (hasError && users.length === 0) {
-    return (
-      <main className="mx-auto max-w-3xl px-4 py-8">
-        <h1 className="mb-6 text-2xl font-bold text-gray-900">Сообщения</h1>
-        <p className="text-red-600">Не удалось загрузить пользователей.</p>
-      </main>
-    );
-  }
-
-  const visibleConversations = conversations.filter((conversation) =>
-    usersById.has(conversation.userId),
-  );
-
   return (
     <main className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold text-gray-900">Сообщения</h1>
 
-      {visibleConversations.length === 0 ? (
+      {conversations.length === 0 ? (
         <div className="rounded-2xl border border-gray-200 bg-white p-8 text-center">
           <p className="font-medium text-gray-700">Пока нет переписок</p>
 
@@ -104,10 +81,15 @@ export const MessagesPage = () => {
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-          {visibleConversations.map((conversation) => {
+          {conversations.map((conversation) => {
             const user = usersById.get(conversation.userId);
+            const userQuery = queryByUserId.get(conversation.userId);
 
-            if (!user) return null;
+            const userName = user
+              ? `${user.firstName} ${user.lastName}`
+              : userQuery?.isLoading
+                ? 'Загрузка профиля...'
+                : 'Профиль недоступен';
 
             return (
               <div
@@ -125,15 +107,21 @@ export const MessagesPage = () => {
                   }
                   className="flex min-w-0 flex-1 cursor-pointer items-center gap-3 text-left sm:gap-4"
                 >
-                  <img
-                    src={user.image}
-                    alt={`${user.firstName} ${user.lastName}`}
-                    className="h-10 w-10 shrink-0 rounded-full object-cover sm:h-12 sm:w-12"
-                  />
+                  {user ? (
+                    <img
+                      src={user.image}
+                      alt={userName}
+                      className="h-10 w-10 shrink-0 rounded-full object-cover sm:h-12 sm:w-12"
+                    />
+                  ) : (
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-500 sm:h-12 sm:w-12">
+                      <MessageCircle size={22} />
+                    </div>
+                  )}
 
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold text-gray-900">
-                      {user.firstName} {user.lastName}
+                      {userName}
                     </p>
 
                     <p className="mt-1 truncate text-sm text-gray-500">
@@ -169,7 +157,7 @@ export const MessagesPage = () => {
                   <button
                     type="button"
                     onClick={() => setDeletingUserId(conversation.userId)}
-                    aria-label={`Удалить переписку с ${user.firstName} ${user.lastName}`}
+                    aria-label={`Удалить переписку с ${userName}`}
                     title="Удалить переписку"
                     className="shrink-0 cursor-pointer rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
                   >
