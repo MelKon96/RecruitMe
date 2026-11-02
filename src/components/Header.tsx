@@ -34,6 +34,7 @@ export const Header = () => {
           </span>
         </Link>
 
+        {/* Здесь можно завести массив NAV_ITEMS и отрисовать его и в этом nav, и в мобильном ниже: три ссылки описаны дважды. */}
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_ITEMS.map((item) => (
             <Link

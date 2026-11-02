@@ -7,6 +7,7 @@ interface IUserCardProps {
 }
 
 export const UserCard = ({ user, onClick }: IUserCardProps) => {
+  // Здесь можно сделать button или article с клавиатурным обработчиком: div с onClick не получает фокус.
   return (
     <button
       type="button"

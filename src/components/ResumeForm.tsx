@@ -28,6 +28,7 @@ export const ResumeForm = ({
   onSubmit,
   submitLabel = 'Создать резюме',
 }: ResumeFormProps) => {
+  // Здесь можно оставить только form: страница CreateResumePage уже оборачивает форму в section с заголовком, получается вложенная вёрстка и двойные отступы.
   return (
     <form
       onSubmit={onSubmit}
