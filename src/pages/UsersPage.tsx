@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
@@ -15,7 +15,7 @@ export const UsersPage = () => {
   const resume = useResume();
 
   const { search } = useSearch({ from: ROUTES.home });
-  const searchValue = search ?? '';
+  const [searchValue, setSearchValue] = useState(search ?? '');
 
   const {
     data,
@@ -31,20 +31,6 @@ export const UsersPage = () => {
     getNextPageParam: (lastPage) => lastPage.nextSkip,
   });
 
-  useInfiniteScroll(loadMoreRef, {
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  });
-
-  const handleSearchChange = (value: string) => {
-    navigate({
-      to: ROUTES.home,
-      search: value ? { search: value } : {},
-      replace: true,
-    });
-  };
-
   const users = data?.pages.flatMap((page) => page.users) ?? [];
 
   const allUsers = resume
@@ -52,6 +38,32 @@ export const UsersPage = () => {
     : users;
 
   const filteredUsers = filterUsers(allUsers, searchValue);
+  const isSearching = searchValue.trim().length > 0;
+
+  useEffect(() => {
+    if (
+      !isSearching ||
+      filteredUsers.length > 0 ||
+      !hasNextPage ||
+      isFetchingNextPage
+    ) {
+      return;
+    }
+
+    void fetchNextPage();
+  }, [
+    isSearching,
+    filteredUsers.length,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  ]);
+
+  useInfiniteScroll(loadMoreRef, {
+    hasNextPage: hasNextPage && (!isSearching || filteredUsers.length > 0),
+    isFetchingNextPage,
+    fetchNextPage,
+  });
 
   if (isLoading) {
     return (
@@ -92,43 +104,44 @@ export const UsersPage = () => {
           id="specialist-search"
           type="search"
           value={searchValue}
-          onChange={(event) => handleSearchChange(event.target.value)}
+          onChange={(event) => setSearchValue(event.target.value)}
           placeholder="Имя и технологии, например Next React James..."
           className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
         />
       </div>
 
       {filteredUsers.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredUsers.map((user) => (
-              <UserCard
-                key={user.id}
-                user={user}
-                onClick={() =>
-                  navigate({
-                    to: ROUTES.users,
-                    params: { id: String(user.id) },
-                  })
-                }
-              />
-            ))}
-          </div>
-
-          <div ref={loadMoreRef} className="py-10 text-center">
-            {isFetchingNextPage && (
-              <p className="text-sm text-gray-500">Загрузка порции...</p>
-            )}
-            {!hasNextPage && users.length > 0 && (
-              <p className="text-sm text-gray-400">Все специалисты загружены</p>
-            )}
-          </div>
-        </>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredUsers.map((user) => (
+            <UserCard
+              key={user.id}
+              user={user}
+              onClick={() =>
+                navigate({
+                  to: ROUTES.users,
+                  params: { id: String(user.id) },
+                })
+              }
+            />
+          ))}
+        </div>
+      ) : isSearching && (hasNextPage || isFetchingNextPage) ? (
+        <p className="py-12 text-center text-gray-500">Поиск специалистов...</p>
       ) : (
         <p className="py-12 text-center text-gray-500">
           Специалисты по вашему запросу не найдены.
         </p>
       )}
+
+      <div ref={loadMoreRef} className="py-10 text-center">
+        {!isSearching && isFetchingNextPage && (
+          <p className="text-sm text-gray-500">Загрузка специалистов...</p>
+        )}
+
+        {!isSearching && !hasNextPage && users.length > 0 && (
+          <p className="text-sm text-gray-400">Все специалисты загружены</p>
+        )}
+      </div>
     </main>
   );
 };
