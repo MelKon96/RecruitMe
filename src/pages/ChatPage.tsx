@@ -16,6 +16,7 @@ export const ChatPage = () => {
 
   const isOwnResume = userId === String(OWN_RESUME_ID);
   const isValidId = /^\d+$/.test(userId) && Number(userId) > 0;
+  const userIdNumber = isValidId ? Number(userId) : null;
 
   useEffect(() => {
     if (isOwnResume) {
@@ -32,7 +33,7 @@ export const ChatPage = () => {
     isError,
     refetch,
   } = useQuery({
-    queryKey: queryKeys.user(Number(userId)),
+    queryKey: queryKeys.user(userIdNumber ?? 0),
     queryFn: ({ signal }) => fetchUserById(Number(userId), { signal }),
     enabled: isValidId && !isOwnResume,
     retry: false,
