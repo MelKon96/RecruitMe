@@ -54,9 +54,13 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
               {user.company.title}
             </p>
 
-            <p className="text-sm text-gray-400">
-              {user.company.name} • {user.company.department}
-            </p>
+            {(user.company.name || user.company.department) && (
+              <p className="text-sm text-gray-400">
+                {[user.company.name, user.company.department]
+                  .filter(Boolean)
+                  .join(' • ')}
+              </p>
+            )}
           </div>
         </div>
 
