@@ -58,7 +58,7 @@ export const MyResumesPage = () => {
             <div className="flex items-center gap-4">
               <img
                 src={resume.image}
-                alt={`${resume.firstName} ${resume.lastName}`}
+                alt=""
                 className="h-16 w-16 rounded-full border border-gray-200 object-cover"
               />
 
