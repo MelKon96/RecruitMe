@@ -45,7 +45,11 @@ export const ResumeForm = ({
             id="firstName"
             {...register('firstName')}
             className={inputClassName}
-            placeholder="Иван"
+            placeholder="Геральт"
+            aria-invalid={!!errors.firstName}
+            aria-describedby={
+              errors.firstName ? 'firstName-error' : undefined
+            }
           />
         </Field>
 
@@ -58,7 +62,11 @@ export const ResumeForm = ({
             id="lastName"
             {...register('lastName')}
             className={inputClassName}
-            placeholder="Иванов"
+            placeholder="Ривийский"
+            aria-invalid={!!errors.lastName}
+            aria-describedby={
+              errors.lastName ? 'lastName-error' : undefined
+            }
           />
         </Field>
       </div>
@@ -73,6 +81,10 @@ export const ResumeForm = ({
           {...register('position')}
           className={inputClassName}
           placeholder="Frontend-разработчик"
+          aria-invalid={!!errors.position}
+          aria-describedby={
+            errors.position ? 'position-error' : undefined
+          }
         />
       </Field>
 
@@ -81,7 +93,13 @@ export const ResumeForm = ({
         htmlFor="level"
         error={errors.level?.message}
       >
-        <select id="level" {...register('level')} className={inputClassName}>
+        <select
+          id="level"
+          {...register('level')}
+          className={inputClassName}
+          aria-invalid={!!errors.level}
+          aria-describedby={errors.level ? 'level-error' : undefined}
+        >
           {DEV_LEVELS.map((level) => (
             <option key={level} value={level}>
               {level}
@@ -97,7 +115,9 @@ export const ResumeForm = ({
             type="email"
             {...register('email')}
             className={inputClassName}
-            placeholder="ivan@example.com"
+            placeholder="geralt@example.com"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? 'email-error' : undefined}
           />
         </Field>
 
@@ -108,6 +128,8 @@ export const ResumeForm = ({
             {...register('phone')}
             className={inputClassName}
             placeholder="+7 900 123-45-67"
+            aria-invalid={!!errors.phone}
+            aria-describedby={errors.phone ? 'phone-error' : undefined}
           />
         </Field>
       </div>
@@ -131,6 +153,8 @@ export const ResumeForm = ({
           {...register('bio')}
           className={`${inputClassName} resize-none`}
           placeholder="Расскажите о своём опыте и профессиональных целях"
+          aria-invalid={!!errors.bio}
+          aria-describedby={errors.bio ? 'bio-error' : undefined}
         />
       </Field>
 

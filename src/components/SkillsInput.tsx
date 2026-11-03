@@ -17,6 +17,8 @@ export const SkillsInput = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const errorId = 'skillInput-error';
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -127,6 +129,8 @@ export const SkillsInput = ({
           role="combobox"
           aria-expanded={isSuggestionsOpen && Boolean(normalizedInput)}
           aria-controls="skill-suggestions"
+          aria-invalid={!!error}
+          aria-describedby={error ? errorId : undefined}
         />
       </div>
 
@@ -168,7 +172,11 @@ export const SkillsInput = ({
         чтобы добавить.
       </p>
 
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p id={errorId} role="alert" className="mt-1 text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 };
