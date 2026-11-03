@@ -75,7 +75,7 @@ export const SkillsInput = ({
   };
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="relative">
       <label
         htmlFor="skillInput"
         className="mb-2 block text-sm font-medium text-gray-700"
@@ -170,7 +170,7 @@ export const SkillsInput = ({
           <ul
             id="skill-suggestions"
             role="listbox"
-            className="mt-1 max-h-52 overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+            className="absolute left-0 top-full z-50 mt-1 max-h-52 w-full overflow-y-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
           >
             {visibleSuggestions.map((technology, index) => (
               <li
