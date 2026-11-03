@@ -1,5 +1,6 @@
-import { useParams } from '@tanstack/react-router';
+import { useNavigate, useParams } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
+
 import { fetchUserById, queryKeys } from '../api/usersApi';
 import { UserDetailCard } from '../components/UserDetailCard';
 import { useResume } from '../hooks/useResume';
@@ -7,6 +8,7 @@ import { ROUTES } from '../constants';
 
 export const UserDetailPage = () => {
   const { id } = useParams({ from: ROUTES.users });
+  const navigate = useNavigate();
   const numericId = Number(id);
   const ownResume = useResume();
 
@@ -25,7 +27,10 @@ export const UserDetailPage = () => {
   const user = isOwnResume ? ownResume : fetchedUser;
 
   const handleBack = () => {
-    window.history.back();
+    navigate({
+      to: ROUTES.home,
+      replace: true,
+    });
   };
 
   if (isLoading && !isOwnResume) {
