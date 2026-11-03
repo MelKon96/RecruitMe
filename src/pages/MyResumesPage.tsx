@@ -104,13 +104,6 @@ export const MyResumesPage = () => {
             Создайте резюме, чтобы представить свои навыки и опыт потенциальным
             заказчикам.
           </p>
-
-          <Link
-            to={ROUTES.createResume}
-            className="mt-6 rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
-          >
-            Создать резюме
-          </Link>
         </div>
       ) : (
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
