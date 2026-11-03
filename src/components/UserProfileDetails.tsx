@@ -23,8 +23,8 @@ export const UserProfileDetails = ({
                 key={skill}
                 type="button"
                 onClick={() => onSkillClick(skill)}
+                aria-label={`Найти специалистов со знанием ${skill}`}
                 className="cursor-pointer rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 transition hover:border-indigo-300 hover:bg-indigo-100 focus-visible:outline-2 focus-visible:outline-indigo-500"
-                title={`Найти специалистов со знанием ${skill}`}
               >
                 {skill}
               </button>
