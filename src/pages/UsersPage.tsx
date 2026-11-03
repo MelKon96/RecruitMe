@@ -4,7 +4,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import { fetchUsersPage, queryKeys } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 import { useResume } from '../hooks/useResume';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { filterUsers } from '../utils/filterUsers';

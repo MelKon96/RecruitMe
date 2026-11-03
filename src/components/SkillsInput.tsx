@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { technologies } from '../constants/technologies';
+import { technologies } from '../constants';
 
 interface SkillsInputProps {
   skills: string[];

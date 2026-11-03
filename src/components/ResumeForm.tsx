@@ -6,7 +6,7 @@ import {
 } from 'react-hook-form';
 
 import type { ResumeFormValues } from '../schemas/resumeSchema';
-import { DEV_LEVELS } from '../constants/devLevels';
+import { DEV_LEVELS } from '../constants';
 import { SkillsInput } from './SkillsInput';
 import { Field } from './Field';
 

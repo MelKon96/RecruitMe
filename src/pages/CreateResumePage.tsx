@@ -6,10 +6,9 @@ import type { IUser } from '../types/user';
 import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
-import { ROUTES } from '../constants/paths';
+import { OWN_RESUME_ID, ROUTES } from '../constants';
 import { useResume } from '../hooks/useResume';
 import { useResumeContext } from '../context/useResumeContext';
-import { OWN_RESUME_ID } from '../constants/id';
 
 const toResume = (data: ResumeFormValues): IUser => ({
   id: OWN_RESUME_ID,

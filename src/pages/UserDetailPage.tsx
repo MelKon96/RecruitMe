@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchUserById, queryKeys } from '../api/usersApi';
 import { UserDetailCard } from '../components/UserDetailCard';
 import { useResume } from '../hooks/useResume';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 
 export const UserDetailPage = () => {
   const { id } = useParams({ from: ROUTES.users });

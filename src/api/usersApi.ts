@@ -1,7 +1,7 @@
 import type { IUser } from '../types/user';
 import type { IRawUser } from '../types/rawUser';
 import { adaptUser } from '../utils/adapters';
-import { USERS_PER_PAGE } from '../constants/pagination';
+import { USERS_PER_PAGE } from '../constants';
 
 interface IRawUsersResponse {
   users: IRawUser[];

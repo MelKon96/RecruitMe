@@ -1,8 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
-import { ROUTES } from '../constants/paths';
-import { OWN_RESUME_ID } from '../constants/id';
-import { LEVEL_COLORS } from '../constants/levelColors';
+import { LEVEL_COLORS, OWN_RESUME_ID, ROUTES } from '../constants';
 import { UserProfileDetails } from './UserProfileDetails';
 
 interface IUserDetailCardProps {

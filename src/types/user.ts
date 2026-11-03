@@ -1,4 +1,4 @@
-import type { DevLevel } from '../constants/devLevels';
+import type { DevLevel } from '../constants';
 
 export interface IUser {
   id: number;
@@ -17,4 +17,3 @@ export interface IUser {
   bio: string;
   location?: string;
 }
-

@@ -3,8 +3,7 @@ import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchUserById, queryKeys } from '../api/usersApi';
-import { ROUTES } from '../constants/paths';
-import { OWN_RESUME_ID } from '../constants/id';
+import { OWN_RESUME_ID, ROUTES } from '../constants';
 
 import { ChatError } from '../components/chat/ChatError';
 import { ChatConversation } from '../components/chat/ChatConversation';

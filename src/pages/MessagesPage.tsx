@@ -4,13 +4,12 @@ import { useQueries } from '@tanstack/react-query';
 import { MessageCircle, Trash2 } from 'lucide-react';
 
 import { fetchUserById, queryKeys } from '../api/usersApi';
-import { ROUTES } from '../constants/paths';
+import { OWN_RESUME_ID, ROUTES } from '../constants';
 import type { IConversation } from '../types/conversation';
 import {
   getConversations,
   removeConversation,
 } from '../storage/conversationsStorage';
-import { OWN_RESUME_ID } from '../constants/id';
 
 export const MessagesPage = () => {
   const navigate = useNavigate();

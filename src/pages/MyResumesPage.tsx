@@ -1,10 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import { FileText, Pencil, Trash2 } from 'lucide-react';
-import { ROUTES } from '../constants/paths';
+import { LEVEL_COLORS, ROUTES } from '../constants';
 import { useResume } from '../hooks/useResume';
 import { useResumeContext } from '../context/useResumeContext';
 import { UserProfileDetails } from '../components/UserProfileDetails';
-import { LEVEL_COLORS } from '../constants/levelColors';
 
 
 export const MyResumesPage = () => {

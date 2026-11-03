@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 
 import type { IUser } from '../../types/user';
-import { ROUTES } from '../../constants/paths';
+import { CHAT_STATUS_LABELS, ROUTES } from '../../constants';
 import { useChatSocket } from '../../hooks/useChatSocket';
-import { CHAT_STATUS_LABELS } from '../../constants/chatStatus';
 
 interface IChatConversationProps {
   userId: string;

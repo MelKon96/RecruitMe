@@ -12,7 +12,7 @@ import { MessagesPage } from '../pages/MessagesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
 import { RootLayout } from '../components/RootLayout';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 
 const rootRoute = createRootRoute({
   component: RootLayout,

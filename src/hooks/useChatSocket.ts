@@ -5,7 +5,7 @@ import {
   getConversations,
   upsertConversation,
 } from '../storage/conversationsStorage';
-import type { ChatConnectionStatus } from '../constants/chatStatus';
+import type { ChatConnectionStatus } from '../constants';
 
 export const useChatSocket = (userId: string) => {
   const [messages, setMessages] = useState<IMessage[]>(() => {

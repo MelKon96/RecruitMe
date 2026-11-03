@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 
 const NAV_ITEMS = [
   { label: 'Специалисты', to: ROUTES.home, exact: true },

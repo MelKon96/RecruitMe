@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { DEV_LEVELS } from '../constants/devLevels';
+import { DEV_LEVELS } from '../constants';
 
 export const resumeSchema = z.object({
   firstName: z.string().trim().min(1, 'Введите имя'),
