@@ -18,7 +18,7 @@ interface ResumeFormProps {
   submitLabel?: string;
 }
 
-const inputClassName =
+const INPUT_CLASS_NAME =
   'w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100';
 
 export const ResumeForm = ({
@@ -44,12 +44,10 @@ export const ResumeForm = ({
           <input
             id="firstName"
             {...register('firstName')}
-            className={inputClassName}
+            className={INPUT_CLASS_NAME}
             placeholder="Геральт"
             aria-invalid={!!errors.firstName}
-            aria-describedby={
-              errors.firstName ? 'firstName-error' : undefined
-            }
+            aria-describedby={errors.firstName ? 'firstName-error' : undefined}
           />
         </Field>
 
@@ -61,12 +59,10 @@ export const ResumeForm = ({
           <input
             id="lastName"
             {...register('lastName')}
-            className={inputClassName}
+            className={INPUT_CLASS_NAME}
             placeholder="Ривийский"
             aria-invalid={!!errors.lastName}
-            aria-describedby={
-              errors.lastName ? 'lastName-error' : undefined
-            }
+            aria-describedby={errors.lastName ? 'lastName-error' : undefined}
           />
         </Field>
       </div>
@@ -79,12 +75,10 @@ export const ResumeForm = ({
         <input
           id="position"
           {...register('position')}
-          className={inputClassName}
+          className={INPUT_CLASS_NAME}
           placeholder="Frontend-разработчик"
           aria-invalid={!!errors.position}
-          aria-describedby={
-            errors.position ? 'position-error' : undefined
-          }
+          aria-describedby={errors.position ? 'position-error' : undefined}
         />
       </Field>
 
@@ -96,7 +90,7 @@ export const ResumeForm = ({
         <select
           id="level"
           {...register('level')}
-          className={inputClassName}
+          className={INPUT_CLASS_NAME}
           aria-invalid={!!errors.level}
           aria-describedby={errors.level ? 'level-error' : undefined}
         >
@@ -114,7 +108,7 @@ export const ResumeForm = ({
             id="email"
             type="email"
             {...register('email')}
-            className={inputClassName}
+            className={INPUT_CLASS_NAME}
             placeholder="geralt@example.com"
             aria-invalid={!!errors.email}
             aria-describedby={errors.email ? 'email-error' : undefined}
@@ -126,7 +120,7 @@ export const ResumeForm = ({
             id="phone"
             type="tel"
             {...register('phone')}
-            className={inputClassName}
+            className={INPUT_CLASS_NAME}
             placeholder="+7 900 123-45-67"
             aria-invalid={!!errors.phone}
             aria-describedby={errors.phone ? 'phone-error' : undefined}
@@ -151,7 +145,7 @@ export const ResumeForm = ({
           id="bio"
           rows={5}
           {...register('bio')}
-          className={`${inputClassName} resize-none`}
+          className={`${INPUT_CLASS_NAME} resize-none`}
           placeholder="Расскажите о своём опыте и профессиональных целях"
           aria-invalid={!!errors.bio}
           aria-describedby={errors.bio ? 'bio-error' : undefined}
@@ -169,7 +163,7 @@ export const ResumeForm = ({
         <input
           id="companyName"
           {...register('companyName')}
-          className={inputClassName}
+          className={INPUT_CLASS_NAME}
           placeholder="Название компании"
         />
       </Field>
@@ -178,7 +172,7 @@ export const ResumeForm = ({
         <input
           id="department"
           {...register('department')}
-          className={inputClassName}
+          className={INPUT_CLASS_NAME}
           placeholder="Frontend-разработка, 3 года опыта"
         />
       </Field>
@@ -187,7 +181,7 @@ export const ResumeForm = ({
         <input
           id="location"
           {...register('location')}
-          className={inputClassName}
+          className={INPUT_CLASS_NAME}
           placeholder="Москва или удалённо"
         />
       </Field>
