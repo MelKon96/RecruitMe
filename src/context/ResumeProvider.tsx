@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import type { IUser } from '../types/user';
-import { getResume, RESUME_STORAGE_KEY } from '../storage/resumeStorage';
+import {
+  getResumeStorage,
+  saveResumeStorage,
+  type IResumeStorage,
+} from '../storage/resumeStorage';
 import { ResumeContext } from './ResumeContext';
 
 interface ResumeProviderProps {
@@ -8,32 +12,89 @@ interface ResumeProviderProps {
 }
 
 export function ResumeProvider({ children }: ResumeProviderProps) {
-  const [resume, setResume] = useState<IUser | null>(getResume);
+  const [storage, setStorage] = useState<IResumeStorage>(getResumeStorage);
 
-  const saveResume = useCallback((newResume: IUser) => {
-    localStorage.setItem(RESUME_STORAGE_KEY, JSON.stringify(newResume));
-    setResume(newResume);
-  }, []);
+  const saveResume = useCallback(
+    (newResume: IUser) => {
+      const existingResume = storage.resumes.some(
+        (resume) => resume.id === newResume.id,
+      );
 
-  const removeResume = useCallback(() => {
-    localStorage.removeItem(RESUME_STORAGE_KEY);
-    setResume(null);
-  }, []);
+      const resumes = existingResume
+        ? storage.resumes.map((resume) =>
+            resume.id === newResume.id ? newResume : resume,
+          )
+        : [...storage.resumes, newResume];
+
+      const nextStorage: IResumeStorage = {
+        resumes,
+        activeResumeId: storage.activeResumeId ?? newResume.id,
+      };
+
+      saveResumeStorage(nextStorage);
+      setStorage(nextStorage);
+    },
+    [storage],
+  );
+
+  const removeResume = useCallback(
+    (id: number) => {
+      const resumes = storage.resumes.filter((resume) => resume.id !== id);
+
+      const nextStorage: IResumeStorage = {
+        resumes,
+        activeResumeId:
+          storage.activeResumeId === id
+            ? (resumes[0]?.id ?? null)
+            : storage.activeResumeId,
+      };
+
+      saveResumeStorage(nextStorage);
+      setStorage(nextStorage);
+    },
+    [storage],
+  );
+
+  const setActiveResume = useCallback(
+    (id: number) => {
+      const nextStorage: IResumeStorage = {
+        ...storage,
+        activeResumeId: storage.activeResumeId === id ? null : id,
+      };
+
+      saveResumeStorage(nextStorage);
+      setStorage(nextStorage);
+    },
+    [storage],
+  );
 
   useEffect(() => {
-    const updateResume = () => {
-      setResume(getResume());
+    const updateResumeStorage = () => {
+      setStorage(getResumeStorage());
     };
 
-    window.addEventListener('storage', updateResume);
+    window.addEventListener('storage', updateResumeStorage);
 
     return () => {
-      window.removeEventListener('storage', updateResume);
+      window.removeEventListener('storage', updateResumeStorage);
     };
   }, []);
 
+  const activeResume =
+    storage.resumes.find((resume) => resume.id === storage.activeResumeId) ??
+    null;
+
   return (
-    <ResumeContext.Provider value={{ resume, saveResume, removeResume }}>
+    <ResumeContext.Provider
+      value={{
+        resumes: storage.resumes,
+        activeResumeId: storage.activeResumeId,
+        activeResume,
+        saveResume,
+        removeResume,
+        setActiveResume,
+      }}
+    >
       {children}
     </ResumeContext.Provider>
   );

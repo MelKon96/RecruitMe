@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -6,12 +6,11 @@ import type { IUser } from '../types/user';
 import { resumeSchema } from '../schemas/resumeSchema';
 import type { ResumeFormValues } from '../schemas/resumeSchema';
 import { ResumeForm } from '../components/ResumeForm';
-import { OWN_RESUME_ID, ROUTES } from '../constants';
-import { useResume } from '../hooks/useResume';
+import { ROUTES } from '../constants';
 import { useResumeContext } from '../context/useResumeContext';
 
-const toResume = (data: ResumeFormValues): IUser => ({
-  id: OWN_RESUME_ID,
+const toResume = (data: ResumeFormValues, id: number): IUser => ({
+  id,
   firstName: data.firstName,
   lastName: data.lastName,
   image: `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -32,8 +31,12 @@ const toResume = (data: ResumeFormValues): IUser => ({
 
 export const CreateResumePage = () => {
   const navigate = useNavigate();
-  const savedResume = useResume();
-  const { saveResume } = useResumeContext();
+  const { id } = useSearch({ from: ROUTES.createResume });
+
+  const { resumes, saveResume } = useResumeContext();
+
+  const resumeToEdit = resumes.find((resume) => resume.id === id);
+  const isEditing = Boolean(resumeToEdit);
 
   const {
     register,
@@ -43,22 +46,27 @@ export const CreateResumePage = () => {
   } = useForm<ResumeFormValues>({
     resolver: zodResolver(resumeSchema),
     defaultValues: {
-      firstName: savedResume?.firstName ?? '',
-      lastName: savedResume?.lastName ?? '',
-      position: savedResume?.company.title ?? '',
-      level: savedResume?.level ?? 'Junior',
-      email: savedResume?.email ?? '',
-      phone: savedResume?.phone ?? '',
-      skills: savedResume?.skills ?? [],
-      bio: savedResume?.bio ?? '',
-      companyName: savedResume?.company.name ?? '',
-      department: savedResume?.company.department ?? '',
-      location: savedResume?.location ?? '',
+      firstName: resumeToEdit?.firstName ?? '',
+      lastName: resumeToEdit?.lastName ?? '',
+      position: resumeToEdit?.company.title ?? '',
+      level: resumeToEdit?.level ?? 'Junior',
+      email: resumeToEdit?.email ?? '',
+      phone: resumeToEdit?.phone ?? '',
+      skills: resumeToEdit?.skills ?? [],
+      bio: resumeToEdit?.bio ?? '',
+      companyName: resumeToEdit?.company.name ?? '',
+      department: resumeToEdit?.company.department ?? '',
+      location: resumeToEdit?.location ?? '',
     },
   });
 
   const onSubmit = (data: ResumeFormValues) => {
-    saveResume(toResume(data));
+    const resumeId =
+      resumeToEdit?.id ??
+      Math.min(0, ...resumes.map((resume) => resume.id)) - 1;
+
+    saveResume(toResume(data, resumeId));
+
     navigate({ to: ROUTES.myResumes });
   };
 
@@ -72,7 +80,7 @@ export const CreateResumePage = () => {
       </Link>
 
       <h1 className="mt-4 mb-2 text-2xl font-bold text-gray-900">
-        {savedResume ? 'Редактировать резюме' : 'Создать резюме'}
+        {isEditing ? 'Редактировать резюме' : 'Создать резюме'}
       </h1>
 
       <p className="mb-8 text-gray-600">
@@ -84,7 +92,7 @@ export const CreateResumePage = () => {
         control={control}
         errors={errors}
         onSubmit={handleSubmit(onSubmit)}
-        submitLabel={savedResume ? 'Сохранить изменения' : 'Создать резюме'}
+        submitLabel={isEditing ? 'Сохранить изменения' : 'Создать резюме'}
       />
     </section>
   );

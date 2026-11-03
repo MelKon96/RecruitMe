@@ -47,6 +47,11 @@ const myResumesRoute = createRoute({
 const createResumeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.createResume,
+  validateSearch: (search: Record<string, unknown>): { id?: number } => {
+    const id = Number(search.id);
+
+    return Number.isInteger(id) && id < 0 ? { id } : {};
+  },
   component: lazyRouteComponent(
     () => import('../pages/CreateResumePage'),
     'CreateResumePage',

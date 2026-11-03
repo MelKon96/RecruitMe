@@ -2,9 +2,12 @@ import { createContext } from 'react';
 import type { IUser } from '../types/user';
 
 interface ResumeContextValue {
-  resume: IUser | null;
+  resumes: IUser[];
+  activeResumeId: number | null;
+  activeResume: IUser | null;
   saveResume: (resume: IUser) => void;
-  removeResume: () => void;
+  removeResume: (id: number) => void;
+  setActiveResume: (id: number) => void;
 }
 
 export const ResumeContext = createContext<ResumeContextValue | null>(null);

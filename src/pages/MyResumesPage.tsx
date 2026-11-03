@@ -1,20 +1,22 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { FileText, Pencil, Trash2 } from 'lucide-react';
+import { Eye, EyeOff, FileText, Pencil, Trash2 } from 'lucide-react';
+
 import { LEVEL_COLORS, ROUTES } from '../constants';
-import { useResume } from '../hooks/useResume';
 import { useResumeContext } from '../context/useResumeContext';
 import { UserProfileDetails } from '../components/UserProfileDetails';
 
 export const MyResumesPage = () => {
-  const resume = useResume();
-  const { removeResume } = useResumeContext();
+  const { resumes, activeResumeId, removeResume, setActiveResume } =
+    useResumeContext();
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [resumeToDelete, setResumeToDelete] = useState<number | null>(null);
 
   const deleteButtonRef = useRef<HTMLButtonElement>(null);
   const cancelButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+
+  const isDeleteModalOpen = resumeToDelete !== null;
 
   useLayoutEffect(() => {
     if (!isDeleteModalOpen) return;
@@ -25,7 +27,7 @@ export const MyResumesPage = () => {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setIsDeleteModalOpen(false);
+        setResumeToDelete(null);
       }
 
       if (event.key === 'Tab') {
@@ -61,8 +63,10 @@ export const MyResumesPage = () => {
   }, [isDeleteModalOpen]);
 
   const handleDelete = () => {
-    removeResume();
-    setIsDeleteModalOpen(false);
+    if (resumeToDelete === null) return;
+
+    removeResume(resumeToDelete);
+    setResumeToDelete(null);
   };
 
   return (
@@ -74,12 +78,19 @@ export const MyResumesPage = () => {
           </h1>
 
           <p className="mt-2 text-gray-500">
-            Управляйте своим профилем специалиста.
+            Управляйте своими резюме и выбирайте, какое отображать в каталоге.
           </p>
         </div>
+
+        <Link
+          to={ROUTES.createResume}
+          className="rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-indigo-700"
+        >
+          Создать резюме
+        </Link>
       </div>
 
-      {!resume ? (
+      {resumes.length === 0 ? (
         <div className="flex min-h-[45vh] flex-col items-center justify-center text-center">
           <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600">
             <FileText size={32} strokeWidth={1.8} />
@@ -102,56 +113,100 @@ export const MyResumesPage = () => {
           </Link>
         </div>
       ) : (
-        <article className="mt-8 max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          {/* Здесь можно собрать карточку резюме из тех же блоков, что UserDetailCard (навыки, о себе, контакты), а не верстать профиль второй раз. */}
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <img
-                src={resume.image}
-                alt=""
-                className="h-16 w-16 rounded-full border border-gray-200 object-cover"
-              />
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          {resumes.map((resume) => {
+            const isActive = resume.id === activeResumeId;
 
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {resume.firstName} {resume.lastName}
-                </h2>
-
-                <p className="mt-1 text-gray-600">{resume.company.title}</p>
-
-                <span
-                  className={`mt-2 inline-block rounded-full border px-3 py-1 text-xs font-medium ${LEVEL_COLORS[resume.level]}`}
-                >
-                  {resume.level}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Link
-                to={ROUTES.createResume}
-                aria-label="Редактировать резюме"
-                title="Редактировать резюме"
-                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600"
+            return (
+              <article
+                key={resume.id}
+                className={`rounded-2xl border bg-white p-6 shadow-sm ${
+                  isActive ? 'border-indigo-500' : 'border-gray-200'
+                }`}
               >
-                <Pencil size={18} />
-              </Link>
+                <div className="flex flex-wrap items-start justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={resume.image}
+                      alt=""
+                      className="h-16 w-16 rounded-full border border-gray-200 object-cover"
+                    />
 
-              <button
-                ref={deleteButtonRef}
-                type="button"
-                onClick={() => setIsDeleteModalOpen(true)}
-                aria-label="Удалить резюме"
-                title="Удалить резюме"
-                className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-red-200 text-red-600 transition hover:bg-red-50"
-              >
-                <Trash2 size={18} />
-              </button>
-            </div>
-          </div>
+                    <div>
+                      <h2 className="text-xl font-semibold text-gray-900">
+                        {resume.firstName} {resume.lastName}
+                      </h2>
 
-          <UserProfileDetails user={resume} />
-        </article>
+                      <p className="mt-1 text-gray-600">
+                        {resume.company.title}
+                      </p>
+
+                      <span
+                        className={`mt-2 inline-block rounded-full border px-3 py-1 text-xs font-medium ${LEVEL_COLORS[resume.level]}`}
+                      >
+                        {resume.level}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setActiveResume(resume.id)}
+                      aria-label={
+                        isActive
+                          ? 'Резюме отображается в каталоге'
+                          : 'Показывать резюме в каталоге'
+                      }
+                      title={
+                        isActive
+                          ? 'Отображается в каталоге'
+                          : 'Показывать в каталоге'
+                      }
+                      aria-pressed={isActive}
+                      className={`inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border transition ${
+                        isActive
+                          ? 'border-indigo-200 bg-indigo-50 text-indigo-600'
+                          : 'border-gray-200 text-gray-600 hover:bg-gray-100 hover:text-indigo-600'
+                      }`}
+                    >
+                      {isActive ? <Eye size={18} /> : <EyeOff size={18} />}
+                    </button>
+
+                    <Link
+                      to={ROUTES.createResume}
+                      search={{ id: resume.id }}
+                      aria-label={`Редактировать резюме ${resume.firstName} ${resume.lastName}`}
+                      title="Редактировать резюме"
+                      className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition hover:bg-gray-100 hover:text-indigo-600"
+                    >
+                      <Pencil size={18} />
+                    </Link>
+
+                    <button
+                      ref={isActive ? deleteButtonRef : undefined}
+                      type="button"
+                      onClick={() => setResumeToDelete(resume.id)}
+                      aria-label={`Удалить резюме ${resume.firstName} ${resume.lastName}`}
+                      title="Удалить резюме"
+                      className="inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-red-200 text-red-600 transition hover:bg-red-50"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+
+                {isActive && (
+                  <p className="mt-5 text-sm font-medium text-indigo-600">
+                    Отображается в каталоге
+                  </p>
+                )}
+
+                <UserProfileDetails user={resume} />
+              </article>
+            );
+          })}
+        </div>
       )}
 
       {isDeleteModalOpen && (
@@ -160,7 +215,7 @@ export const MyResumesPage = () => {
           role="presentation"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) {
-              setIsDeleteModalOpen(false);
+              setResumeToDelete(null);
             }
           }}
         >
@@ -183,7 +238,7 @@ export const MyResumesPage = () => {
               id="delete-modal-description"
               className="mt-2 text-sm text-gray-600"
             >
-              Вы уверены, что хотите удалить своё резюме? Это действие нельзя
+              Вы уверены, что хотите удалить это резюме? Это действие нельзя
               отменить.
             </p>
 
@@ -191,7 +246,7 @@ export const MyResumesPage = () => {
               <button
                 ref={cancelButtonRef}
                 type="button"
-                onClick={() => setIsDeleteModalOpen(false)}
+                onClick={() => setResumeToDelete(null)}
                 className="cursor-pointer rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
               >
                 Отмена
