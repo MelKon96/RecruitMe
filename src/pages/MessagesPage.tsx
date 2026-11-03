@@ -50,7 +50,6 @@ export const MessagesPage = () => {
       query.data ? [[String(query.data.id), query.data] as const] : [],
     ),
   );
-
   const queryByUserId = new Map(
     userIds.map((userId, index) => [userId, userQueries[index]]),
   );
@@ -110,7 +109,7 @@ export const MessagesPage = () => {
                   {user ? (
                     <img
                       src={user.image}
-                      alt={userName}
+                      alt=""
                       className="h-10 w-10 shrink-0 rounded-full object-cover sm:h-12 sm:w-12"
                     />
                   ) : (
