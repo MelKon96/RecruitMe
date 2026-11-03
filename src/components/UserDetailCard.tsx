@@ -70,6 +70,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
           <div className="flex justify-end pt-6">
             <button
               type="button"
+              aria-label={`Написать ${user.firstName} ${user.lastName}`}
               onClick={() =>
                 navigate({
                   to: ROUTES.chat,
