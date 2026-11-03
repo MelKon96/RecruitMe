@@ -22,7 +22,7 @@ export const ChatConversation = ({
   const { messages, status, sendMessage } = useChatSocket(userId);
   const [message, setMessage] = useState('');
 
-  const fromMessages = from === 'messages';
+  const isFromMessages = from === 'messages';
 
   const handleSend = () => {
     if (sendMessage(message)) {
@@ -31,7 +31,7 @@ export const ChatConversation = ({
   };
 
   const handleBack = () => {
-    if (fromMessages) {
+    if (isFromMessages) {
       navigate({ to: ROUTES.messages });
       return;
     }
@@ -54,7 +54,7 @@ export const ChatConversation = ({
         onClick={handleBack}
         className="mb-6 cursor-pointer text-sm font-medium text-gray-600 transition hover:text-indigo-600"
       >
-        {fromMessages
+        {isFromMessages
           ? '← Назад к сообщениям'
           : from === 'user'
             ? '← Назад к пользователю'
@@ -67,12 +67,16 @@ export const ChatConversation = ({
             Чат с {user.firstName} {user.lastName}
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p aria-live="polite" className="mt-1 text-sm text-gray-500">
             Статус: {CHAT_STATUS_LABELS[status]}
           </p>
         </div>
 
-        <div className="flex min-h-80 flex-col gap-3 p-5">
+        <div
+          role="log"
+          aria-live="polite"
+          className="flex min-h-80 flex-col gap-3 p-5"
+        >
           {messages.length === 0 ? (
             <p className="text-sm text-gray-400">Напиши первое сообщение.</p>
           ) : (
@@ -101,6 +105,7 @@ export const ChatConversation = ({
           <input
             value={message}
             onChange={(event) => setMessage(event.target.value)}
+            aria-label="Сообщение"
             placeholder="Введите сообщение..."
             className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-indigo-500"
           />
