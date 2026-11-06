@@ -5,13 +5,13 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { fetchUsersPage, queryKeys } from '../api/usersApi';
 import { UserCard } from '../components/UserCard';
 import { ROUTES } from '../constants';
-import { useResume } from '../hooks/useResume';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { filterUsers } from '../utils/filterUsers';
+import { useResumeContext } from '../context/useResumeContext';
 
 export const UsersPage = () => {
   const navigate = useNavigate();
-  const resume = useResume();
+  const resume = useResumeContext().activeResume;
 
   const { search } = useSearch({ from: ROUTES.home });
   const [searchValue, setSearchValue] = useState(search ?? '');

@@ -3,14 +3,14 @@ import { useQuery } from '@tanstack/react-query';
 
 import { fetchUserById, queryKeys } from '../api/usersApi';
 import { UserDetailCard } from '../components/UserDetailCard';
-import { useResume } from '../hooks/useResume';
 import { ROUTES } from '../constants';
+import { useResumeContext } from '../context/useResumeContext';
 
 export const UserDetailPage = () => {
   const { id } = useParams({ from: ROUTES.users });
   const navigate = useNavigate();
   const numericId = Number(id);
-  const ownResume = useResume();
+  const ownResume = useResumeContext().activeResume;
 
   const isOwnResume = ownResume !== null && ownResume.id === numericId;
 
