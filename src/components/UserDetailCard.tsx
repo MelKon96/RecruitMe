@@ -1,8 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import type { IUser } from '../types/user';
-import { ROUTES } from '../constants/paths';
-import { OWN_RESUME_ID } from '../constants/id';
-import { LEVEL_COLORS } from '../constants/levelColors';
+import { LEVEL_COLORS, OWN_RESUME_ID, ROUTES } from '../constants';
 import { UserProfileDetails } from './UserProfileDetails';
 
 interface IUserDetailCardProps {
@@ -54,9 +52,13 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
               {user.company.title}
             </p>
 
-            <p className="text-sm text-gray-400">
-              {user.company.name} • {user.company.department}
-            </p>
+            {(user.company.name || user.company.department) && (
+              <p className="text-sm text-gray-400">
+                {[user.company.name, user.company.department]
+                  .filter(Boolean)
+                  .join(' • ')}
+              </p>
+            )}
           </div>
         </div>
 
@@ -66,6 +68,7 @@ export const UserDetailCard = ({ user, onBack }: IUserDetailCardProps) => {
           <div className="flex justify-end pt-6">
             <button
               type="button"
+              aria-label={`Написать ${user.firstName} ${user.lastName}`}
               onClick={() =>
                 navigate({
                   to: ROUTES.chat,

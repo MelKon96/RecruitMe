@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { IMessage, IConversation } from '../types/conversation';
+import type { IMessage } from '../types/conversation';
 import {
   getConversations,
-  saveConversations,
+  upsertConversation,
 } from '../storage/conversationsStorage';
+import type { ChatConnectionStatus } from '../constants';
 
 export const useChatSocket = (userId: string) => {
   const [messages, setMessages] = useState<IMessage[]>(() => {
@@ -13,7 +14,7 @@ export const useChatSocket = (userId: string) => {
     );
   });
 
-  const [status, setStatus] = useState('Подключение...');
+  const [status, setStatus] = useState<ChatConnectionStatus>('connecting');
 
   const socketRef = useRef<WebSocket | null>(null);
   const messagesRef = useRef<IMessage[]>(messages);
@@ -23,41 +24,16 @@ export const useChatSocket = (userId: string) => {
       messagesRef.current = updatedMessages;
       setMessages(updatedMessages);
 
-      const conversations = getConversations();
-      const index = conversations.findIndex((item) => item.userId === userId);
-
-      const conversation: IConversation = {
-        userId,
-        lastMessage: updatedMessages.at(-1)?.text,
-        messages: updatedMessages,
-      };
-
-      if (index === -1) {
-        conversations.unshift(conversation);
-      } else {
-        conversations[index] = {
-          ...conversations[index],
-          ...conversation,
-        };
-      }
-
-      saveConversations(conversations);
+      upsertConversation(userId, updatedMessages);
     },
     [userId],
   );
 
   useEffect(() => {
-    const conversations = getConversations();
-
-    if (!conversations.some((item) => item.userId === userId)) {
-      conversations.unshift({ userId });
-      saveConversations(conversations);
-    }
-
     const socket = new WebSocket('wss://ws.ifelse.io');
     socketRef.current = socket;
 
-    socket.onopen = () => setStatus('Подключено');
+    socket.onopen = () => setStatus('open');
 
     socket.onmessage = (event: MessageEvent<string>) => {
       if (event.data.startsWith('Request served by')) {
@@ -73,14 +49,14 @@ export const useChatSocket = (userId: string) => {
       saveMessages([...messagesRef.current, newMessage]);
     };
 
-    socket.onerror = () => setStatus('Ошибка соединения');
-    socket.onclose = () => setStatus('Соединение закрыто');
+    socket.onerror = () => setStatus('error');
+    socket.onclose = () => setStatus('closed');
 
     return () => {
       socket.close();
       socketRef.current = null;
     };
-  }, [userId, saveMessages]);
+  }, [saveMessages]);
 
   const sendMessage = useCallback(
     (value: string): boolean => {

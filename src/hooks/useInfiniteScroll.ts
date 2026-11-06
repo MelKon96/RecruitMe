@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface IUseInfiniteScrollOptions {
   hasNextPage: boolean;
@@ -6,13 +6,18 @@ interface IUseInfiniteScrollOptions {
   fetchNextPage: () => void;
 }
 
-export const useInfiniteScroll = (
-  targetRef: RefObject<HTMLDivElement | null>,
-  { hasNextPage, isFetchingNextPage, fetchNextPage }: IUseInfiniteScrollOptions,
-) => {
-  useEffect(() => {
-    const target = targetRef.current;
+export const useInfiniteScroll = ({
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+}: IUseInfiniteScrollOptions) => {
+  const [target, setTarget] = useState<HTMLDivElement | null>(null);
 
+  const loadMoreRef = useCallback((node: HTMLDivElement | null) => {
+    setTarget(node);
+  }, []);
+
+  useEffect(() => {
     if (!target) return;
 
     const observer = new IntersectionObserver(
@@ -27,5 +32,7 @@ export const useInfiniteScroll = (
     observer.observe(target);
 
     return () => observer.disconnect();
-  }, [targetRef, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [target, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  return loadMoreRef;
 };

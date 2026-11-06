@@ -3,8 +3,7 @@ import { useNavigate, useParams, useSearch } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchUserById, queryKeys } from '../api/usersApi';
-import { ROUTES } from '../constants/paths';
-import { OWN_RESUME_ID } from '../constants/id';
+import { OWN_RESUME_ID, ROUTES } from '../constants';
 
 import { ChatError } from '../components/chat/ChatError';
 import { ChatConversation } from '../components/chat/ChatConversation';
@@ -16,6 +15,7 @@ export const ChatPage = () => {
 
   const isOwnResume = userId === String(OWN_RESUME_ID);
   const isValidId = /^\d+$/.test(userId) && Number(userId) > 0;
+  const userIdNumber = isValidId ? Number(userId) : null;
 
   useEffect(() => {
     if (isOwnResume) {
@@ -32,7 +32,7 @@ export const ChatPage = () => {
     isError,
     refetch,
   } = useQuery({
-    queryKey: queryKeys.user(Number(userId)),
+    queryKey: queryKeys.user(userIdNumber ?? 0),
     queryFn: ({ signal }) => fetchUserById(Number(userId), { signal }),
     enabled: isValidId && !isOwnResume,
     retry: false,
