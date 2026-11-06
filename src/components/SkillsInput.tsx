@@ -128,15 +128,17 @@ export const SkillsInput = ({
             if (event.key === 'Enter') {
               event.preventDefault();
 
+              if (!skillInput.trim()) return;
+
               const exactMatch = suggestions.find(
                 (technology) => technology.toLowerCase() === normalizedInput,
               );
 
               if (exactMatch) {
                 addSkill(exactMatch);
-              } else if (visibleSuggestions[activeIndex]) {
+              } else if (isSuggestionsOpen && visibleSuggestions[activeIndex]) {
                 addSkill(visibleSuggestions[activeIndex]);
-              } else if (skillInput.trim()) {
+              } else {
                 addSkill(skillInput);
               }
             }
