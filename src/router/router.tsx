@@ -12,7 +12,7 @@ import { MessagesPage } from '../pages/MessagesPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 
 import { RootLayout } from '../components/RootLayout';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 
 const rootRoute = createRootRoute({
   component: RootLayout,
@@ -47,6 +47,11 @@ const myResumesRoute = createRoute({
 const createResumeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: ROUTES.createResume,
+  validateSearch: (search: Record<string, unknown>): { id?: number } => {
+    const id = Number(search.id);
+
+    return Number.isInteger(id) && id < 0 ? { id } : {};
+  },
   component: lazyRouteComponent(
     () => import('../pages/CreateResumePage'),
     'CreateResumePage',

@@ -1,12 +1,18 @@
 import type { IUser } from '../types/user';
 import type { IRawUser } from '../types/rawUser';
 import { adaptUser } from '../utils/adapters';
+import { USERS_PER_PAGE } from '../constants';
 
 interface IRawUsersResponse {
   users: IRawUser[];
   total: number;
   skip: number;
   limit: number;
+}
+interface IUsersPage {
+  users: IUser[];
+  nextSkip: number | null;
+  total: number;
 }
 
 const requestJson = async <T>(
@@ -24,14 +30,13 @@ const requestJson = async <T>(
 };
 
 export const queryKeys = {
-  users: ['users'] as const,
   user: (id: number) => ['user', id] as const,
   usersInfinite: ['users-infinite'] as const,
 };
 
 export const fetchUsers = async ({
   signal,
-  limit = 10,
+  limit = USERS_PER_PAGE,
   skip = 0,
 }: {
   signal?: AbortSignal;
@@ -55,10 +60,13 @@ export const fetchUsersPage = async ({
 }: {
   pageParam?: number;
   signal?: AbortSignal;
-}) => {
-  const limit = 10;
-  const result = await fetchUsers({ signal, limit, skip: pageParam });
-  const nextSkip = pageParam + limit;
+}): Promise<IUsersPage> => {
+  const result = await fetchUsers({
+    signal,
+    limit: USERS_PER_PAGE,
+    skip: pageParam,
+  });
+  const nextSkip = pageParam + USERS_PER_PAGE;
 
   return {
     users: result.users,

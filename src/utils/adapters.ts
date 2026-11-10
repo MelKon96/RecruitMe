@@ -1,7 +1,6 @@
 import type { IUser } from '../types/user';
-import { DEV_LEVELS, type DevLevel } from '../constants/devLevels';
+import { DEV_LEVELS, technologies, type DevLevel } from '../constants';
 import type { IRawUser } from '../types/rawUser';
-import { technologies } from '../constants/technologies';
 
 const getRandomSkills = (id: number): string[] => {
   const count = (id % 3) + 2;

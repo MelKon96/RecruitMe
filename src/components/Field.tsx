@@ -8,6 +8,8 @@ interface IFieldProps {
 }
 
 export const Field = ({ label, htmlFor, error, children }: IFieldProps) => {
+  const errorId = `${htmlFor}-error`;
+
   return (
     <div>
       <label
@@ -19,7 +21,11 @@ export const Field = ({ label, htmlFor, error, children }: IFieldProps) => {
 
       {children}
 
-      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p id={errorId} role="alert" className="mt-1 text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   );
 };

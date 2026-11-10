@@ -1,20 +1,10 @@
-import type { DevLevel } from '../constants/devLevels';
+import type { DevLevel } from '../constants';
+import type { IRawUser } from './rawUser';
 
-export interface IUser {
-  id: number;
-  firstName: string;
-  lastName: string;
-  image: string;
-  email: string;
-  phone: string;
-  company: {
-    title: string;
-    department: string;
-    name: string;
-  };
+export interface IUser extends Omit<IRawUser, 'company'> {
+  company: Required<NonNullable<IRawUser['company']>>;
   skills: string[];
   level: DevLevel;
   bio: string;
   location?: string;
 }
-

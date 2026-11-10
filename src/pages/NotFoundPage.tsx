@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 
 export const NotFoundPage = () => {
   return (

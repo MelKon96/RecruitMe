@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { Menu, X } from 'lucide-react';
-import { ROUTES } from '../constants/paths';
+import { ROUTES } from '../constants';
 
 const NAV_ITEMS = [
   { label: 'Специалисты', to: ROUTES.home, exact: true },
@@ -25,7 +25,10 @@ export const Header = () => {
           onClick={closeMenu}
           className="flex items-center gap-2 text-xl font-bold tracking-tight text-gray-900"
         >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
+          <span
+            aria-hidden="true"
+            className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white"
+          >
             R
           </span>
 
@@ -40,7 +43,10 @@ export const Header = () => {
             <Link
               key={item.to}
               to={item.to}
-              activeProps={{ className: 'text-indigo-600' }}
+              activeProps={{
+                className: 'text-indigo-600',
+                'aria-current': 'page',
+              }}
               activeOptions={{ exact: 'exact' in item && item.exact }}
               className={linkClass}
             >
@@ -71,7 +77,10 @@ export const Header = () => {
               key={item.to}
               to={item.to}
               onClick={closeMenu}
-              activeProps={{ className: 'bg-indigo-50 text-indigo-600' }}
+              activeProps={{
+                className: 'bg-indigo-50 text-indigo-600',
+                'aria-current': 'page',
+              }}
               activeOptions={{ exact: 'exact' in item && item.exact }}
               className={`${linkClass} rounded-lg px-3 py-3`}
             >
